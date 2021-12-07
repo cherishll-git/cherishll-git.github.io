@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="个人博客">
+  <meta name="author" content="Liuyq">
+  <meta name="keywords" content="">
+  <meta name="description" content="1、镜像操作1.1 镜像的相关命令​    镜像名称：一般分为两部分  [repository]:[tag]   【在没有指定tag时，默认是latest，代表最新版本的镜像】  1234567docker images  	    #查看镜像docker rmi			#删除镜像docker pull			#从服务拉取镜像docker push			#推送镜像到服务docker save 		#保">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker的基本使用">
+<meta property="og:url" content="https://cherishll-git.github.io/2021/12/06/Docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="CherishLL-Blog">
+<meta property="og:description" content="1、镜像操作1.1 镜像的相关命令​    镜像名称：一般分为两部分  [repository]:[tag]   【在没有指定tag时，默认是latest，代表最新版本的镜像】  1234567docker images  	    #查看镜像docker rmi			#删除镜像docker pull			#从服务拉取镜像docker push			#推送镜像到服务docker save 		#保">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerImage.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerContiner.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerVolume.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/imageStruct.png">
+<meta property="article:published_time" content="2021-12-06T14:02:48.000Z">
+<meta property="article:modified_time" content="2021-12-07T08:09:01.321Z">
+<meta property="article:author" content="Liuyq">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerImage.png">
+  
+  <title>Docker的基本使用 - CherishLL-Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"cherishll-git.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>惜露~</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Docker的基本使用">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-06 22:02" pubdate>
+        星期一, 十二月 6日 2021, 22:02:48
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Docker的基本使用</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1、镜像操作"><a href="#1、镜像操作" class="headerlink" title="1、镜像操作"></a>1、镜像操作</h1><h2 id="1-1-镜像的相关命令"><a href="#1-1-镜像的相关命令" class="headerlink" title="1.1 镜像的相关命令"></a>1.1 镜像的相关命令</h2><p>​    镜像名称：一般分为两部分  [repository]:[tag]   【在没有指定tag时，默认是latest，代表最新版本的镜像】</p>
+<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerImage.png" srcset="/img/loading.gif" lazyload alt="镜像"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker images  	    #查看镜像<br>docker rmi			#删除镜像<br>docker pull			#从服务拉取镜像<br>docker push			#推送镜像到服务<br>docker save 		#保存镜像为压缩包<br>docker load			#加载压缩包为镜像<br>docker build       #基于Dockerfile构建镜像<br></code></pre></td></tr></table></figure>
+
+<h1 id="2、Docker的容器操作"><a href="#2、Docker的容器操作" class="headerlink" title="2、Docker的容器操作"></a>2、Docker的容器操作</h1><p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerContiner.png" srcset="/img/loading.gif" lazyload alt="容器操作"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:5.6#运行一个容器<br>	--name #指定容器名称<br>  -p #指定端口映射<br>  -d 让容器后台运行<br>docker logs #查看容器日志命令，添加-f参数可以持续查看日志<br>docker ps #查看容器状态。添加-a参数查看所有状态的容器<br>docker exec -it [容器名] [要执行的命令] #进入容器执行<br><span class="hljs-meta">	#</span><span class="bash"><span class="hljs-built_in">exec</span>命令可以进入容器修改文件，但是在容器内修改文件是不推荐的</span><br><span class="hljs-meta">	#</span><span class="bash">docker <span class="hljs-built_in">exec</span> -it mn bash <span class="hljs-comment">## 其中bash是一个linux终端交互命令</span></span><br>docker rm  #不能删除运行中的容器，除非添加 -f 参数<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-1-运行redis容器"><a href="#2-1-运行redis容器" class="headerlink" title="2.1 运行redis容器"></a>2.1 运行redis容器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -p 6379:6379 -v $PWD/data:/data  -d redis:3.2 redis-server --appendonly yes<br><span class="hljs-meta">#</span><span class="bash">-v <span class="hljs-variable">$PWD</span>/data:/data : 将主机中当前目录下的data挂载到容器的/data</span><br><span class="hljs-meta">#</span><span class="bash">redis-server --appendonly yes : 在容器执行redis-server启动命令，并打开redis持久化配置</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-2-简单操作"><a href="#2-1-2-简单操作" class="headerlink" title="2.1.2 简单操作"></a>2.1.2 简单操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker exec -it redis bash  #进入redis容器<br>redis-cli	#执行redis-cli客户端命令<br></code></pre></td></tr></table></figure>
+
+<h1 id="3、Docker数据卷"><a href="#3、Docker数据卷" class="headerlink" title="3、Docker数据卷"></a>3、Docker数据卷</h1><h2 id="3-1-概述"><a href="#3-1-概述" class="headerlink" title="3.1 概述"></a>3.1 概述</h2><p>容器与数据耦合的问题：</p>
+<ul>
+<li>不便于修改。eg: 当我们要修改Nginx的html内容时，需要进入容器内部修改，很不方便。</li>
+<li>数据不可服用。在容器内的修改对外是不可见的。所有修改对新创建的容器是不可复用的。</li>
+<li>升级维护困难。 数据在容器内，如果要升级容器必然删除旧容器，所有数据都跟着删除了</li>
+</ul>
+<p><strong>数据卷</strong>：是一个虚拟目录指向宿主机文件系统中的某个目录（真实目录）。</p>
+<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerVolume.png" srcset="/img/loading.gif" lazyload alt="数据卷"></p>
+<h2 id="3-2-操作数据卷"><a href="#3-2-操作数据卷" class="headerlink" title="3.2 操作数据卷"></a>3.2 操作数据卷</h2><p>数据卷操作的基本语法如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker volume [COMMAND]<br></code></pre></td></tr></table></figure>
+
+<p>docker volume命令是数据卷操作，根据命令后跟随的command来确定下一步的操作：</p>
+<p>​    <code>create</code> 创建一个volume</p>
+<p>​    <code>inspect</code> 显示一个或多个volume的信息</p>
+<p>​    <code>ls</code> 列出所有的volume</p>
+<p>​    <code>prune</code> 删除未使用的volume</p>
+<p>​    <code>rm</code> 删除一个或多个指定的volume</p>
+<blockquote>
+<p>windows中创建的数据卷的地址为(点击<a href="file://wsl%24/docker-desktop-data/version-pack-data/community/docker/volumes/">这里</a>查看)：</p>
+<p>file://wsl%24/docker-desktop-data/version-pack-data/community/docker/volumes/</p>
+</blockquote>
+<h2 id="3-3-挂载数据卷"><a href="#3-3-挂载数据卷" class="headerlink" title="3.3 挂载数据卷"></a>3.3 挂载数据卷</h2><p>创建容器时，可以通过 <code>-v</code> 参数来挂在一个数据卷到某个容器目录。</p>
+<p>举例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run --name mynginx -p 8080:8080 -v html:/root/html  -d nginx <br><span class="hljs-meta">	#</span><span class="bash">-v html:/root/html 把html数据卷挂载到容器内的/root/html这个目录中</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-1-案例-数据卷挂载-："><a href="#3-3-1-案例-数据卷挂载-：" class="headerlink" title="3.3.1 案例(数据卷挂载)："></a>3.3.1 案例(数据卷挂载)：</h3><p>​    创建nginx容器，修改容器内的html目录内的index.html</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker volume create html  #创建html数据卷<br>docker run --name mn -v html:/usr/share/nginx/html -p 80:80 -d nginx<br><span class="hljs-meta">#</span><span class="bash"> 查看html数据卷的位置</span><br>docker volume inspect html<br><span class="hljs-meta">#</span><span class="bash"> 进入该目录（Linux）</span><br>cd /var/lib/docker/volumes/html/_data<br><span class="hljs-meta">#</span><span class="bash"> 修改文件（Linux）</span><br>vi index.html<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>windows中关联数据卷，进入</p>
+<p>file://wsl%24/docker-desktop-data/version-pack-data/community/docker/volumes/html/_data目录下，修改index.html</p>
+</blockquote>
+<h3 id="3-3-2-案例-宿主机目录挂载"><a href="#3-3-2-案例-宿主机目录挂载" class="headerlink" title="3.3.2 案例(宿主机目录挂载)"></a>3.3.2 案例(宿主机目录挂载)</h3><p>windows：</p>
+<ul>
+<li>路径盘符要小写</li>
+<li>文件夹名称不能有空格</li>
+<li>文件最好提前创建，不然自动创建出来的是个文件夹</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run --name myNginx -p 80:80 -d -v d:\AppData\docker\volumes\html:/usr/share/nginx/html nginx<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>​    在计算机的<code>d:\AppData\docker\volumes\html</code>目录下，新增或变更资源，都会同步到nginx的<code>/usr/share/nginx/html</code>目录中</p>
+</blockquote>
+<p>目录挂载与数据卷挂载的语法是类似的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">-v [宿主机目录]:[容器内目录]<br>-v [宿主机文件]:[容器内文件]<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-3-数据卷挂载与目录直接挂载的区别"><a href="#3-3-3-数据卷挂载与目录直接挂载的区别" class="headerlink" title="3.3.3 数据卷挂载与目录直接挂载的区别"></a>3.3.3 数据卷挂载与目录直接挂载的区别</h3><p>数据卷挂载：(自动化但隐藏细节) 数据卷挂载耦合度低，由docker来管理目录，但是目录较深，不好找</p>
+<p>目录挂载: (细节自己实现，没有自动化) 目录挂载耦合度高，需要我们自己管理目录，不过目录容易寻找查看</p>
+<h1 id="4、Dockerfile自定义镜像"><a href="#4、Dockerfile自定义镜像" class="headerlink" title="4、Dockerfile自定义镜像"></a>4、Dockerfile自定义镜像</h1><p>常见的镜像在DockerHub就能找到，但是我们自己写的项目就必须自己构建镜像了。</p>
+<p>而要自定义镜像，就必须先了解镜像的结构才行。</p>
+<h2 id="4-1-镜像结构"><a href="#4-1-镜像结构" class="headerlink" title="4.1 镜像结构"></a>4.1 镜像结构</h2><p>镜像是将应用程序及其需要的系统函数库、环境、配置、依赖打包而成。</p>
+<blockquote>
+<p>底层函数库 -》 环境配置 -》依赖安装 -》应用安装 -》应用配置</p>
+</blockquote>
+<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\imageStruct.png" srcset="/img/loading.gif" lazyload alt="模拟Mysql镜像结构"></p>
+<p>镜像是分层结构，每一层称为一个Layer</p>
+<p>简单来说，镜像就是在系统函数库、运行环境<strong>基础</strong>上，添加应用程序文件、配置文件、依赖文件等组合，然后编写好启动脚本打包在一起形成的文件。</p>
+<p>我们要构建镜像，其实就是实现上述打包的过程。</p>
+<h2 id="4-2-Dockerfile语法"><a href="#4-2-Dockerfile语法" class="headerlink" title="4.2 Dockerfile语法"></a>4.2 Dockerfile语法</h2><h3 id="4-2-1-什么是Dockerfile"><a href="#4-2-1-什么是Dockerfile" class="headerlink" title="4.2.1 什么是Dockerfile"></a>4.2.1 什么是Dockerfile</h3><p><strong>Dockerfile</strong>就是一个文本文件，其中包含一个个的**指令(Instruction)**，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer。</p>
+<table>
+<thead>
+<tr>
+<th align="center">指令</th>
+<th align="center">说明</th>
+<th align="center">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">FROM</td>
+<td align="center">指定基础镜像</td>
+<td align="center">FROM centos:6</td>
+</tr>
+<tr>
+<td align="center">ENV</td>
+<td align="center">设置环境变量，可在后面指令使用</td>
+<td align="center">ENV key value</td>
+</tr>
+<tr>
+<td align="center">COPY</td>
+<td align="center">拷贝本地文件到镜像的指定目录</td>
+<td align="center">COPY ./mysql-5.7.rpm /tmp</td>
+</tr>
+<tr>
+<td align="center">RUN</td>
+<td align="center">执行Linux的shell命令，一般是安装过程的命令</td>
+<td align="center">RUN yum install gcc</td>
+</tr>
+<tr>
+<td align="center">EXPOSE</td>
+<td align="center">指定容器运行时监听的端口，是给镜像使用者看的</td>
+<td align="center">EXPOSE 8080</td>
+</tr>
+<tr>
+<td align="center">ENTRYPOINT</td>
+<td align="center">镜像中应用的启动命令，容器运行时调用</td>
+<td align="center">ENTRYPOINT java -jar xx.jar</td>
+</tr>
+</tbody></table>
+<p>更新详细语法说明，请参考<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder">官网文档</a></p>
+<h2 id="4-3-构建Java项目"><a href="#4-3-构建Java项目" class="headerlink" title="4.3 构建Java项目"></a>4.3 构建Java项目</h2><h3 id="4-3-1-基于Ubuntu构建Java项目"><a href="#4-3-1-基于Ubuntu构建Java项目" class="headerlink" title="4.3.1 基于Ubuntu构建Java项目"></a>4.3.1 基于Ubuntu构建Java项目</h3><p>​    需求：基于Ubuntu镜像构建一个新镜像，运行一个java项目</p>
+<ul>
+<li><p>步骤1：新建一个空文件夹docker-demo</p>
+</li>
+<li><p>步骤2：拷贝docker-demo.jar文件到docker-demo这个目录</p>
+</li>
+<li><p>步骤3：拷贝jdk8.tar.gz文件到docker-demo这个目录</p>
+</li>
+<li><p>步骤4：拷贝Dockerfile到docker-demo这个目录</p>
+</li>
+</ul>
+<p>Dockerfile内容如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># 指定基础镜像</span><br><span class="hljs-keyword">FROM</span> ubuntu:<span class="hljs-number">16.04</span><br><span class="hljs-comment"># 配置环境变量，JDK的安装目录</span><br><span class="hljs-keyword">ENV</span> JAVA_DIR=/usr/local<br><br><span class="hljs-comment"># 拷贝jdk和java项目的包</span><br><span class="hljs-keyword">COPY</span><span class="bash"> ./jdk8.tar.gz <span class="hljs-variable">$JAVA_DIR</span>/</span><br><span class="hljs-keyword">COPY</span><span class="bash"> ./docker-demo.jar /tmp/app.jar</span><br><br><span class="hljs-comment"># 安装JDK</span><br><span class="hljs-keyword">RUN</span><span class="bash"> <span class="hljs-built_in">cd</span> <span class="hljs-variable">$JAVA_DIR</span> \</span><br><span class="bash"> &amp;&amp; tar -xf ./jdk8.tar.gz \</span><br><span class="bash"> &amp;&amp; mv ./jdk1.8.0_144 ./java8</span><br><br><span class="hljs-comment"># 配置环境变量</span><br><span class="hljs-keyword">ENV</span> JAVA_HOME=$JAVA_DIR/java8<br><span class="hljs-keyword">ENV</span> PATH=$PATH:$JAVA_HOME/bin<br><br><span class="hljs-comment"># 暴露端口</span><br><span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">8090</span><br><span class="hljs-comment"># 入口，java项目的启动命令</span><br><span class="hljs-keyword">ENTRYPOINT</span><span class="bash"> java -jar /tmp/app.jar</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>步骤5：进入docker-demo</p>
+<p>将准备好的docker-demo上传到虚拟机任意目录，然后进入docker-demo目录下</p>
+</li>
+<li><p>步骤6：运行命令：</p>
+<p>构建镜像</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker build -t javaweb:1.0 .<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="4-3-2-基于java8构建Java项目"><a href="#4-3-2-基于java8构建Java项目" class="headerlink" title="4.3.2 基于java8构建Java项目"></a>4.3.2 基于java8构建Java项目</h3><p>虽然我们可以基于Ubuntu基础镜像，添加任意自己需要的安装包，构建镜像，但是却比较麻烦。所以大多数情况下，我们都可以在一些安装了部分软件的基础镜像上做改造。</p>
+<p>例如，构建java项目的镜像，可以在已经准备了JDK的基础镜像基础上构建。</p>
+<p>需求：基于java:8-alpine镜像，将一个Java项目构建为镜像</p>
+<p>实现思路如下：</p>
+<ul>
+<li><p>① 新建一个空的目录，然后在目录中新建一个文件，命名为Dockerfile</p>
+</li>
+<li><p>② 拷贝课前资料提供的docker-demo.jar到这个目录中</p>
+</li>
+<li><p>③ 编写Dockerfile文件：</p>
+<ul>
+<li><p>a ）基于java:8-alpine作为基础镜像</p>
+</li>
+<li><p>b ）将app.jar拷贝到镜像中</p>
+</li>
+<li><p>c ）暴露端口</p>
+</li>
+<li><p>d ）编写入口ENTRYPOINT</p>
+<p>内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs doc">FROM java:8-alpine<br>COPY ./app.jar /tmp/app.jar<br>EXPOSE 8090<br>ENTRYPOINT java -jar /tmp/app.jar<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>④ 使用docker build命令构建镜像</p>
+</li>
+<li><p>⑤ 使用docker run创建容器并运行</p>
+</li>
+</ul>
+<h3 id="4-3-3-小结"><a href="#4-3-3-小结" class="headerlink" title="4.3.3 小结"></a>4.3.3 小结</h3><ol>
+<li><p>Dockerfile的本质是一个文件，通过指令描述镜像的构建过程</p>
+</li>
+<li><p>Dockerfile的第一行必须是FROM，从一个基础镜像来构建</p>
+</li>
+<li><p>基础镜像可以是基本操作系统，如Ubuntu。也可以是其他人制作好的镜像，例如：java:8-alpine</p>
+</li>
+</ol>
+<h1 id="5、DockerCompose"><a href="#5、DockerCompose" class="headerlink" title="5、DockerCompose"></a>5、DockerCompose</h1><p>Docker Compose可以基于<strong>Compose文件</strong>帮我们快速的部署分布式应用，而无需手动一个个创建和运行容器！</p>
+<h2 id="5-1-初始DockerCompose"><a href="#5-1-初始DockerCompose" class="headerlink" title="5.1 初始DockerCompose"></a>5.1 初始DockerCompose</h2><p>Compose文件是一个<strong>文本文件</strong>，通过<strong>指令</strong>定义集群中的每个容器如何运行</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">version:</span> <span class="hljs-string">&quot;3.8&quot;</span><br> <span class="hljs-attr">services:</span><br>  <span class="hljs-attr">mysql:</span><br>    <span class="hljs-string">image:</span> <span class="hljs-string">mysql:5.7.25</span><br>    <span class="hljs-attr">environment:</span><br>     <span class="hljs-attr">MYSQL_ROOT_PASSWORD:</span> <span class="hljs-number">123</span> <br>    <span class="hljs-attr">volumes:</span><br>     <span class="hljs-string">-</span> <span class="hljs-string">&quot;/tmp/mysql/data:/var/lib/mysql&quot;</span><br>     <span class="hljs-string">-</span> <span class="hljs-string">&quot;/tmp/mysql/conf/hmy.cnf:/etc/mysql/conf.d/hmy.cnf&quot;</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-string">build:</span> <span class="hljs-string">.</span><br>    <span class="hljs-attr">ports:</span><br>     <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;8090:8090&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>上面的Compose文件就描述一个项目，其中包含两个容器：</p>
+<ul>
+<li>mysql：一个基于<code>mysql:5.7.25</code>镜像构建的容器，并且挂载了两个目录</li>
+<li>web：一个基于<code>docker build</code>临时构建的镜像容器，映射端口时8090</li>
+</ul>
+<p>DockerCompose的详细语法参考<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/compose-file/">官网</a></p>
+<p>其实DockerCompose文件可以看做是将多个<code>docker run</code>命令写到一个文件，只是语法稍有差异。</p>
+<h2 id="5-2-安装DockerCompose"><a href="#5-2-安装DockerCompose" class="headerlink" title="5.2 安装DockerCompose"></a>5.2 安装DockerCompose</h2><p>参考[docker的介绍与安装]</p>
+<h2 id="5-3-部署微服务集群"><a href="#5-3-部署微服务集群" class="headerlink" title="5.3 部署微服务集群"></a>5.3 部署微服务集群</h2><p><strong>需求</strong>：将之前学习的cloud-demo微服务集群利用DockerCompose部署</p>
+<p><strong>实现思路</strong>：</p>
+<p>① 查看课前资料提供的cloud-demo文件夹，里面已经编写好了docker-compose文件</p>
+<p>② 修改自己的cloud-demo项目，将数据库、nacos地址都命名为docker-compose中的服务名</p>
+<p>③ 使用maven打包工具，将项目中的每个微服务都打包为app.jar</p>
+<p>④ 将打包好的app.jar拷贝到cloud-demo中的每一个对应的子目录中</p>
+<p>⑤ 将cloud-demo上传至虚拟机，利用 docker-compose up -d 来部署</p>
+<h1 id="6、Docker镜像仓库"><a href="#6、Docker镜像仓库" class="headerlink" title="6、Docker镜像仓库"></a>6、Docker镜像仓库</h1><h2 id="6-1搭建私有镜像仓库"><a href="#6-1搭建私有镜像仓库" class="headerlink" title="6.1搭建私有镜像仓库"></a>6.1搭建私有镜像仓库</h2><p>参考[docker的介绍与安装]</p>
+<h2 id="6-2-推送、拉取镜像"><a href="#6-2-推送、拉取镜像" class="headerlink" title="6.2 推送、拉取镜像"></a>6.2 推送、拉取镜像</h2><p>推送镜像到<strong>私有镜像</strong>服务<strong>必须先tag</strong>，步骤如下：</p>
+<p>① 重新tag本地镜像，名称前缀为私有仓库的地址：192.168.150.101:8080/</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker tag nginx:latest 192.168.150.101:8080/nginx:1.0 <br></code></pre></td></tr></table></figure>
+
+
+
+<p>② 推送镜像</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker push 192.168.150.101:8080/nginx:1.0 <br></code></pre></td></tr></table></figure>
+
+
+
+<p>③ 拉取镜像</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull 192.168.150.101:8080/nginx:1.0 <br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/docker/">docker</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/06/Docker%E7%9A%84%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%AE%89%E8%A3%85/">
+                        <span class="hidden-mobile">Docker的安装</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
