@@ -23,16 +23,16 @@
 <meta property="og:site_name" content="CherishLL-Blog">
 <meta property="og:description" content="1、镜像操作1.1 镜像的相关命令​    镜像名称：一般分为两部分  [repository]:[tag]   【在没有指定tag时，默认是latest，代表最新版本的镜像】  1234567docker images  	    #查看镜像docker rmi			#删除镜像docker pull			#从服务拉取镜像docker push			#推送镜像到服务docker save 		#保">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerImage.png">
-<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerContiner.png">
-<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerVolume.png">
-<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/imageStruct.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/blogImg/dockerImage.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/blogImg/dockerContiner.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/blogImg/dockerVolume.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/blogImg/imageStruct.png">
 <meta property="article:published_time" content="2021-12-06T14:02:48.000Z">
-<meta property="article:modified_time" content="2021-12-07T08:09:01.321Z">
+<meta property="article:modified_time" content="2021-12-09T08:31:55.531Z">
 <meta property="article:author" content="Liuyq">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="d:/git-data/CherishLLBlog/source/img/blogImg/dockerImage.png">
+<meta name="twitter:image" content="https://cherishll-git.github.io/img/blogImg/dockerImage.png">
   
   <title>Docker的基本使用 - CherishLL-Blog</title>
 
@@ -243,10 +243,10 @@
             
             <div class="markdown-body">
               <h1 id="1、镜像操作"><a href="#1、镜像操作" class="headerlink" title="1、镜像操作"></a>1、镜像操作</h1><h2 id="1-1-镜像的相关命令"><a href="#1-1-镜像的相关命令" class="headerlink" title="1.1 镜像的相关命令"></a>1.1 镜像的相关命令</h2><p>​    镜像名称：一般分为两部分  [repository]:[tag]   【在没有指定tag时，默认是latest，代表最新版本的镜像】</p>
-<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerImage.png" srcset="/img/loading.gif" lazyload alt="镜像"></p>
+<p><img src="/img/blogImg/dockerImage.png" srcset="/img/loading.gif" lazyload alt="镜像"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker images  	    #查看镜像<br>docker rmi			#删除镜像<br>docker pull			#从服务拉取镜像<br>docker push			#推送镜像到服务<br>docker save 		#保存镜像为压缩包<br>docker load			#加载压缩包为镜像<br>docker build       #基于Dockerfile构建镜像<br></code></pre></td></tr></table></figure>
 
-<h1 id="2、Docker的容器操作"><a href="#2、Docker的容器操作" class="headerlink" title="2、Docker的容器操作"></a>2、Docker的容器操作</h1><p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerContiner.png" srcset="/img/loading.gif" lazyload alt="容器操作"></p>
+<h1 id="2、Docker的容器操作"><a href="#2、Docker的容器操作" class="headerlink" title="2、Docker的容器操作"></a>2、Docker的容器操作</h1><p><img src="/img/blogImg/dockerContiner.png" srcset="/img/loading.gif" lazyload alt="容器操作"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:5.6#运行一个容器<br>	--name #指定容器名称<br>  -p #指定端口映射<br>  -d 让容器后台运行<br>docker logs #查看容器日志命令，添加-f参数可以持续查看日志<br>docker ps #查看容器状态。添加-a参数查看所有状态的容器<br>docker exec -it [容器名] [要执行的命令] #进入容器执行<br><span class="hljs-meta">	#</span><span class="bash"><span class="hljs-built_in">exec</span>命令可以进入容器修改文件，但是在容器内修改文件是不推荐的</span><br><span class="hljs-meta">	#</span><span class="bash">docker <span class="hljs-built_in">exec</span> -it mn bash <span class="hljs-comment">## 其中bash是一个linux终端交互命令</span></span><br>docker rm  #不能删除运行中的容器，除非添加 -f 参数<br></code></pre></td></tr></table></figure>
 
 <h2 id="2-1-运行redis容器"><a href="#2-1-运行redis容器" class="headerlink" title="2.1 运行redis容器"></a>2.1 运行redis容器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -p 6379:6379 -v $PWD/data:/data  -d redis:3.2 redis-server --appendonly yes<br><span class="hljs-meta">#</span><span class="bash">-v <span class="hljs-variable">$PWD</span>/data:/data : 将主机中当前目录下的data挂载到容器的/data</span><br><span class="hljs-meta">#</span><span class="bash">redis-server --appendonly yes : 在容器执行redis-server启动命令，并打开redis持久化配置</span><br></code></pre></td></tr></table></figure>
@@ -260,7 +260,7 @@
 <li>升级维护困难。 数据在容器内，如果要升级容器必然删除旧容器，所有数据都跟着删除了</li>
 </ul>
 <p><strong>数据卷</strong>：是一个虚拟目录指向宿主机文件系统中的某个目录（真实目录）。</p>
-<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\dockerVolume.png" srcset="/img/loading.gif" lazyload alt="数据卷"></p>
+<p><img src="/img/blogImg/dockerVolume.png" srcset="/img/loading.gif" lazyload alt="数据卷"></p>
 <h2 id="3-2-操作数据卷"><a href="#3-2-操作数据卷" class="headerlink" title="3.2 操作数据卷"></a>3.2 操作数据卷</h2><p>数据卷操作的基本语法如下:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker volume [COMMAND]<br></code></pre></td></tr></table></figure>
 
@@ -307,7 +307,7 @@
 <blockquote>
 <p>底层函数库 -》 环境配置 -》依赖安装 -》应用安装 -》应用配置</p>
 </blockquote>
-<p><img src="D:\git-data\CherishLLBlog\source\img\blogImg\imageStruct.png" srcset="/img/loading.gif" lazyload alt="模拟Mysql镜像结构"></p>
+<p><img src="/img/blogImg/imageStruct.png" srcset="/img/loading.gif" lazyload alt="模拟Mysql镜像结构"></p>
 <p>镜像是分层结构，每一层称为一个Layer</p>
 <p>简单来说，镜像就是在系统函数库、运行环境<strong>基础</strong>上，添加应用程序文件、配置文件、依赖文件等组合，然后编写好启动脚本打包在一起形成的文件。</p>
 <p>我们要构建镜像，其实就是实现上述打包的过程。</p>
