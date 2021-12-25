@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="​    在程序中可以使用缓存的技术来节省对数据库的开销。Spring Boot对缓存提供了很好的支持，我们几乎不用做过多的配置即可使用各种缓存实现。这里主要介绍Ehcache和Redis缓存实现。">
+  <meta name="author" content="Liuyq">
+  <meta name="keywords" content="">
+  <meta name="description" content="​    在程序中可以使用缓存的技术来节省对数据库的开销。Spring Boot对缓存提供了很好的支持，我们几乎不用做过多的配置即可使用各种缓存实现。这里主要介绍Ehcache和Redis缓存实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot中使用缓存">
+<meta property="og:url" content="https://cherishll-git.github.io/2021/12/23/SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:site_name" content="CherishLL-Blog">
+<meta property="og:description" content="​    在程序中可以使用缓存的技术来节省对数据库的开销。Spring Boot对缓存提供了很好的支持，我们几乎不用做过多的配置即可使用各种缓存实现。这里主要介绍Ehcache和Redis缓存实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache01.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache02.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache03.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache04.png">
+<meta property="og:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache05.png">
+<meta property="article:published_time" content="2021-12-23T07:54:20.000Z">
+<meta property="article:modified_time" content="2021-12-24T07:47:35.570Z">
+<meta property="article:author" content="Liuyq">
+<meta property="article:tag" content="缓存">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="d:/git-data/CherishLLBlog/source/img/SpringBoot/springbootcache01.png">
+  
+  <title>SpringBoot中使用缓存 - CherishLL-Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"cherishll-git.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>惜露~</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SpringBoot中使用缓存">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-23 15:54" pubdate>
+        星期四, 十二月 23日 2021, 15:54:20
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      10k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      32 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SpringBoot中使用缓存</h1>
+            
+            <div class="markdown-body">
+              <p>​    在程序中可以使用缓存的技术来节省对数据库的开销。Spring Boot对缓存提供了很好的支持，我们几乎不用做过多的配置即可使用各种缓存实现。这里主要介绍Ehcache和Redis缓存实现。</p>
+<span id="more"></span>
+
+<h1 id="1、准备工作"><a href="#1、准备工作" class="headerlink" title="1、准备工作"></a>1、准备工作</h1><h2 id="1-1-搭建一个SpringBoot项目"><a href="#1-1-搭建一个SpringBoot项目" class="headerlink" title="1.1 搭建一个SpringBoot项目"></a>1.1 搭建一个SpringBoot项目</h2><p>项目结构如下图所示：</p>
+<img src="D:\git-data\CherishLLBlog\source\img\SpringBoot\springbootcache01.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>然后yml中配置日志输出级别以观察SQL的执行情况：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">logging:</span><br>  <span class="hljs-attr">level:</span><br>    <span class="hljs-attr">com:</span><br>      <span class="hljs-attr">lyq:</span><br>        <span class="hljs-attr">mapper:</span> <span class="hljs-string">debug</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>其中com.lyq.mapper为MyBatis的Mapper接口路径</p>
+</blockquote>
+<h2 id="1-2-编写测试方法"><a href="#1-2-编写测试方法" class="headerlink" title="1.2 编写测试方法"></a>1.2 编写测试方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringJUnit4ClassRunner.class)</span><br><span class="hljs-meta">@SpringBootTest(classes = CacheApplication.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApplicationTest</span> </span>&#123;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> StudentService studentService;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        Student student1 = <span class="hljs-keyword">this</span>.studentService.queryStuBySno(<span class="hljs-string">&quot;210&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;学号为[&quot;</span> + student1.getStuno() + <span class="hljs-string">&quot;]的学生姓名为：&quot;</span> + student1.getStuname());<br><br>        Student student2 = <span class="hljs-keyword">this</span>.studentService.queryStuBySno(<span class="hljs-string">&quot;210&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;学号为[&quot;</span> + student2.getStuno() + <span class="hljs-string">&quot;]的学生姓名为：&quot;</span> + student2.getStuname());<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>测试运行<code>test()</code>方法，结果如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-number">2021-12-23 15:52:32.532 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span>  <span class="hljs-attr">Preparing:</span> <span class="hljs-string">select</span> <span class="hljs-string">*</span> <span class="hljs-string">from</span> <span class="hljs-string">student</span> <span class="hljs-string">where</span> <span class="hljs-string">stuno</span> <span class="hljs-string">=</span> <span class="hljs-string">?</span><br><span class="hljs-number">2021-12-23 15:52:32.853 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span> <span class="hljs-attr">Parameters:</span> <span class="hljs-number">210</span><span class="hljs-string">(String)</span><br><span class="hljs-number">2021-12-23 15:52:32.894 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">&lt;==</span>      <span class="hljs-attr">Total:</span> <span class="hljs-number">1</span><br><span class="hljs-string">学号210的学生姓名为：zhangsan</span><br><span class="hljs-number">2021-12-23 15:52:32.896 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span>  <span class="hljs-attr">Preparing:</span> <span class="hljs-string">select</span> <span class="hljs-string">*</span> <span class="hljs-string">from</span> <span class="hljs-string">student</span> <span class="hljs-string">where</span> <span class="hljs-string">stuno</span> <span class="hljs-string">=</span> <span class="hljs-string">?</span><br><span class="hljs-number">2021-12-23 15:52:32.897 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span> <span class="hljs-attr">Parameters:</span> <span class="hljs-number">210</span><span class="hljs-string">(String)</span><br><span class="hljs-number">2021-12-23 15:52:32.900 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">23860</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">&lt;==</span>      <span class="hljs-attr">Total:</span> <span class="hljs-number">1</span><br><span class="hljs-string">学号210的学生姓名为：zhangsan</span><br></code></pre></td></tr></table></figure>
+
+<p>可发现第二个查询虽然和第一个查询完全一样，但其还是对数据库进行了查询。接下来引入缓存来改善这个结果</p>
+<h1 id="2、使用缓存"><a href="#2、使用缓存" class="headerlink" title="2、使用缓存"></a>2、使用缓存</h1><h2 id="2-1-缓存注解使用"><a href="#2-1-缓存注解使用" class="headerlink" title="2.1 缓存注解使用"></a>2.1 缓存注解使用</h2><h3 id="2-1-1-引入依赖"><a href="#2-1-1-引入依赖" class="headerlink" title="2.1.1 引入依赖"></a>2.1.1 引入依赖</h3><p>要开启Spring Boot的缓存功能，需要在pom中引入<code>spring-boot-starter-cache</code>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-cache<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-2-开启缓存"><a href="#2-1-2-开启缓存" class="headerlink" title="2.1.2 开启缓存"></a>2.1.2 开启缓存</h3><p>在Spring Boot入口类中加入<code>@EnableCaching</code>注解开启缓存功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span><br><span class="hljs-meta">@EnableCaching</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CacheApplication</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        SpringApplication.run(CacheApplication.class, args);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-3-加入缓存注解"><a href="#2-1-3-加入缓存注解" class="headerlink" title="2.1.3 加入缓存注解"></a>2.1.3 加入缓存注解</h3><p>在StudentService接口中加入缓存注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@CacheConfig(cacheNames = &quot;student&quot;)</span><br><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">StudentService</span> </span>&#123;<br>    <span class="hljs-meta">@CachePut(key = &quot;#p0.sno&quot;)</span><br>    <span class="hljs-function">Student <span class="hljs-title">updateStu</span><span class="hljs-params">(Student student)</span></span>;<br><br>    <span class="hljs-meta">@CacheEvict(key = &quot;#p0&quot;, allEntries = true)</span><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">deleteStuBySno</span><span class="hljs-params">(String stuno)</span></span>;<br><br>    <span class="hljs-meta">@Cacheable(key = &quot;#p0&quot;)</span><br>    <span class="hljs-function">Student <span class="hljs-title">queryStuBySno</span><span class="hljs-params">(String stuno)</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们在StudentService接口中加入了<code>@CacheConfig</code>注解，queryStuBySno方法使用了注解<code>@Cacheable(key=&quot;#p0&quot;)</code>，即将id作为redis中的key值。当我们更新数据的时候，应该使用<code>@CachePut(key=&quot;#p0.sno&quot;)</code>进行缓存数据的更新，否则将查询到脏数据，因为该注解保存的是方法的返回值，所以这里应该返回Student。</p>
+<p>其实现类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository(&quot;studentService&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StudentServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">StudentService</span> </span>&#123;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> StudentMapper studentMapper;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Student <span class="hljs-title">updateStu</span><span class="hljs-params">(Student student)</span> </span>&#123;<br>        studentMapper.updateStu(student);<br>        <span class="hljs-keyword">return</span> studentMapper.queryStuBySno(student.getStuno());<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">deleteStuBySno</span><span class="hljs-params">(String stuno)</span> </span>&#123;<br>        studentMapper.deleteStuBySno(stuno);<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Student <span class="hljs-title">queryStuBySno</span><span class="hljs-params">(String stuno)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> studentMapper.queryStuBySno(stuno);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>再次执行测试类方法，执行结果如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-number">2021-12-23 17:08:46.579 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">1468</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span>  <span class="hljs-attr">Preparing:</span> <span class="hljs-string">select</span> <span class="hljs-string">*</span> <span class="hljs-string">from</span> <span class="hljs-string">student</span> <span class="hljs-string">where</span> <span class="hljs-string">stuno</span> <span class="hljs-string">=</span> <span class="hljs-string">?</span><br><span class="hljs-number">2021-12-23 17:08:46.849 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">1468</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span> <span class="hljs-attr">Parameters:</span> <span class="hljs-number">210</span><span class="hljs-string">(String)</span><br><span class="hljs-number">2021-12-23 17:08:46.880 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">1468</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">&lt;==</span>      <span class="hljs-attr">Total:</span> <span class="hljs-number">1</span><br><span class="hljs-string">学号为[210]的学生姓名为：zhangsan</span><br><span class="hljs-string">学号为[210]的学生姓名为：zhangsan</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="2-2-缓存注解"><a href="#2-2-缓存注解" class="headerlink" title="2.2 缓存注解"></a>2.2 缓存注解</h2><p>在Spring Boot中可使用的缓存注解有：</p>
+<h3 id="2-2-1-CacheConfig"><a href="#2-2-1-CacheConfig" class="headerlink" title="2.2.1 @CacheConfig"></a>2.2.1 <code>@CacheConfig</code></h3><p>主要用于配置该类中会用到的一些共用的缓存配置。在上面<code>@CacheConfig(cacheNames = &quot;student&quot;)</code>：配置了该数据访问对象中返回的内容将存储于名为student的缓存对象中，我们也可以不使用该注解，直接通过<code>@Cacheable</code>自己配置缓存集的名字来定义；</p>
+<h3 id="2-2-2-Cacheable"><a href="#2-2-2-Cacheable" class="headerlink" title="2.2.2 @Cacheable"></a>2.2.2 <code>@Cacheable</code></h3><p>配置了queryStuBySno函数的返回值将被加入缓存。同时在查询时，会先从缓存中获取，若不存在才再发起对数据库的访问。该注解主要有下面几个参数：</p>
+<ul>
+<li><code>value</code>、<code>cacheNames</code>：两个等同的参数（cacheNames为Spring 4新增，作为value的别名），用于指定缓存存储的集合名。由于Spring 4中新增了<code>@CacheConfig</code>，因此在Spring 3中原本必须有的value属性，也成为非必需项了；</li>
+<li><code>key</code>：缓存对象存储在Map集合中的key值，非必需，缺省按照函数的所有参数组合作为key值，若自己配置需使用SpEL表达式，比如：<code>@Cacheable(key = &quot;#p0&quot;)</code>：使用函数第一个参数作为缓存的key值，更多关于SpEL表达式的详细内容可<a target="_blank" rel="noopener" href="https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache">参考</a>；</li>
+<li><code>condition</code>：缓存对象的条件，非必需，也需使用SpEL表达式，只有满足表达式条件的内容才会被缓存，比如：<code>@Cacheable(key = &quot;#p0&quot;, condition = &quot;#p0.length() &lt; 3&quot;)</code>，表示只有当第一个参数的长度小于3的时候才会被缓存；</li>
+<li><code>unless</code>：另外一个缓存条件参数，非必需，需使用SpEL表达式。它不同于condition参数的地方在于它的判断时机，该条件是在函数被调用之后才做判断的，所以它可以通过对result进行判断；</li>
+<li><code>keyGenerator</code>：用于指定key生成器，非必需。若需要指定一个自定义的key生成器，我们需要去实现<code>org.springframework.cache.interceptor.KeyGenerator</code>接口，并使用该参数来指定；</li>
+<li><code>cacheManager</code>：用于指定使用哪个缓存管理器，非必需。只有当有多个时才需要使用；</li>
+<li><code>cacheResolver</code>：用于指定使用那个缓存解析器，非必需。需通过org.springframework.cache.interceptor.CacheResolver接口来实现自己的缓存解析器，并用该参数指定；</li>
+</ul>
+<h3 id="2-2-3-CachePut"><a href="#2-2-3-CachePut" class="headerlink" title="2.2.3 @CachePut"></a>2.2.3 <code>@CachePut</code></h3><p>配置于函数上，能够根据参数定义条件来进行缓存，其缓存的是方法的返回值，它与<code>@Cacheable</code>不同的是，它每次都会真实调用函数，所以主要用于数据新增和修改操作上。它的参数与<code>@Cacheable</code>类似，具体功能可参考上面对<code>@Cacheable</code>参数的解析；</p>
+<h3 id="2-2-4-CacheEvict"><a href="#2-2-4-CacheEvict" class="headerlink" title="2.2.4 @CacheEvict"></a>2.2.4 <code>@CacheEvict</code></h3><p>配置于函数上，通常用在删除方法上，用来从缓存中移除相应数据。除了同<code>@Cacheable</code>一样的参数之外，它还有下面两个参数：</p>
+<ul>
+<li><code>allEntries</code>：非必需，默认为false。当为true时，会移除所有数据；</li>
+<li><code>beforeInvocation</code>：非必需，默认为false，会在调用方法之后移除数据。当为true时，会在调用方法之前移除数据。</li>
+</ul>
+<h2 id="2-3-缓存实现"><a href="#2-3-缓存实现" class="headerlink" title="2.3 缓存实现"></a>2.3 缓存实现</h2><p>要使用Spring Boot的缓存功能，还需要提供一个缓存的具体实现。Spring Boot根据下面的顺序去侦测缓存实现：</p>
+<ul>
+<li>Generic</li>
+<li>JCache (JSR-107)</li>
+<li>EhCache 2.x</li>
+<li>Hazelcast</li>
+<li>Infinispan</li>
+<li>Redis</li>
+<li>Guava</li>
+<li>Simple</li>
+</ul>
+<p>除了按顺序侦测外，我们也可以通过配置属性<code>spring.cache.type</code>来强制指定。</p>
+<p>接下来主要介绍基于Redis和Ehcache的缓存实现。</p>
+<h3 id="2-3-1-Redis"><a href="#2-3-1-Redis" class="headerlink" title="2.3.1 Redis"></a>2.3.1 Redis</h3><h4 id="2-3-1-1-Redis准备工作"><a href="#2-3-1-1-Redis准备工作" class="headerlink" title="2.3.1.1 Redis准备工作"></a>2.3.1.1 Redis准备工作</h4><p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftArchive/redis/releases">下载Redis</a>，Redis 支持 32 位和 64 位。这个需要系统平台的实际情况选择，这里我基于docker应用容器框架，拉取redis最新镜像，并启动容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker pull redis #拉取镜像<br>docker run -p 6379:6379 -v $PWD/data:/data  -d redis:3.2 redis-server --appendonly yes #启动redis容器<br><br>docker exec -it redis01 bash  #进入redis容器<br>redis-cli	#执行redis-cli客户端命令<br></code></pre></td></tr></table></figure>
+
+<img src="D:\git-data\CherishLLBlog\source\img\SpringBoot\springbootcache02.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="2-3-1-2-引入依赖"><a href="#2-3-1-2-引入依赖" class="headerlink" title="2.3.1.2 引入依赖"></a>2.3.1.2 引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- spring-boot redis --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-1-3-配置redis"><a href="#2-3-1-3-配置redis" class="headerlink" title="2.3.1.3 配置redis"></a>2.3.1.3 配置redis</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>   <br>  <span class="hljs-attr">redis:</span><br>    <span class="hljs-comment"># Redis数据库索引（默认为0）</span><br>    <span class="hljs-attr">database:</span> <span class="hljs-number">0</span><br>    <span class="hljs-comment"># Redis服务器地址</span><br>    <span class="hljs-attr">host:</span> <span class="hljs-string">localhost</span><br>    <span class="hljs-comment"># Redis服务器连接端口</span><br>    <span class="hljs-attr">port:</span> <span class="hljs-number">6379</span><br>    <span class="hljs-attr">pool:</span><br>      <span class="hljs-comment"># 连接池最大连接数（使用负值表示没有限制）</span><br>      <span class="hljs-attr">max-active:</span> <span class="hljs-number">8</span><br>      <span class="hljs-comment"># 连接池最大阻塞等待时间（使用负值表示没有限制）</span><br>      <span class="hljs-attr">max-wait:</span> <span class="hljs-number">-1</span><br>      <span class="hljs-comment"># 连接池中的最大空闲连接</span><br>      <span class="hljs-attr">max-idle:</span> <span class="hljs-number">8</span><br>      <span class="hljs-comment"># 连接池中的最小空闲连接</span><br>      <span class="hljs-attr">min-idle:</span> <span class="hljs-number">0</span><br>    <span class="hljs-comment"># 连接超时时间（毫秒）</span><br>    <span class="hljs-attr">timeout:</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>更多关于Spring Boot Redis可<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html#">参考配置</a></p>
+<h4 id="2-3-1-4-redis配置类"><a href="#2-3-1-4-redis配置类" class="headerlink" title="2.3.1.4 redis配置类"></a>2.3.1.4 redis配置类</h4><p>通常我们都使用Json序列化后存入Redis，而SpringBoot1.x和SpringBoot2.x版本在自定义<code>CacheManager</code>有很大的区别，需要自行研读源码。</p>
+<p>在此简单说明，但不做源码详细分析。</p>
+<p>在SpringBoot1.x中，<code>RedisCacheManager</code>是可以使用<code>RedisTemplate</code>作为参数注入的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> CacheManager <span class="hljs-title">cacheManager</span><span class="hljs-params">(RedisTemplate redisTemplate)</span> </span>&#123;<br>	RedisCacheManager cacheManager = <span class="hljs-keyword">new</span> RedisCacheManager(redisTemplate);<br>    <span class="hljs-keyword">return</span> cacheManager;<br>&#125; <br></code></pre></td></tr></table></figure>
+
+
+
+<p>但在SpringBoot2.x中，有很大的不同，<code>RedisCacheManager</code>构造器如下，已经无法再使用<code>RedisTemplate</code>进行构造</p>
+<p><img src="D:\git-data\CherishLLBlog\source\img\SpringBoot\springbootcache03.png" srcset="/img/loading.gif" lazyload></p>
+<p>官方文档中：</p>
+<p><img src="D:\git-data\CherishLLBlog\source\img\SpringBoot\springbootcache04.png" srcset="/img/loading.gif" lazyload></p>
+<p>说明现在配置<code>RedisCacheManager</code>需要一个<code>RedisCacheConfiguration</code>来作为配置对象，通过<code>RedisCacheConfiguration</code>这个对象来指定对应的序列化策略</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisConfig</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CachingConfigurerSupport</span> </span>&#123;<br>    <span class="hljs-comment">// 自定义缓存key生成策略</span><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> KeyGenerator <span class="hljs-title">keyGenerator</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> KeyGenerator() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">generate</span><span class="hljs-params">(Object target, java.lang.reflect.Method method, Object... params)</span> </span>&#123;<br>                StringBuffer sb = <span class="hljs-keyword">new</span> StringBuffer();<br>                sb.append(target.getClass().getName());<br>                sb.append(method.getName());<br>                <span class="hljs-keyword">for</span> (Object obj : params) &#123;<br>                    sb.append(obj.toString());<br>                &#125;<br>                <span class="hljs-keyword">return</span> sb.toString();<br>            &#125;<br>        &#125;;<br>    &#125;<br><br>    <span class="hljs-comment">// 缓存管理器</span><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> CacheManager <span class="hljs-title">cacheManager</span><span class="hljs-params">(RedisConnectionFactory factory)</span> </span>&#123;<br>        RedisSerializer&lt;String&gt; redisSerializer = <span class="hljs-keyword">new</span> StringRedisSerializer();<br>        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = <span class="hljs-keyword">new</span> Jackson2JsonRedisSerializer(Object.class);<br>        <span class="hljs-comment">//解决查询缓存转换异常的问题</span><br>        ObjectMapper om = <span class="hljs-keyword">new</span> ObjectMapper();<br>        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);<br>        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);<br>        jackson2JsonRedisSerializer.setObjectMapper(om);<br><br>        <span class="hljs-comment">// 配置序列化（解决乱码的问题）</span><br>        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()<br>                .entryTtl(Duration.ofDays(<span class="hljs-number">1</span>))<br>                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))<br>                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))<br>                .disableCachingNullValues();<br><br>        RedisCacheManager cacheManager = RedisCacheManager.builder(factory)<br>                .cacheDefaults(config)<br>                .build();<br>        <span class="hljs-keyword">return</span> cacheManager;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000025216273">参考Redis的json序列化配置</a></p>
+<h4 id="2-3-1-5-测试"><a href="#2-3-1-5-测试" class="headerlink" title="2.3.1.5 测试"></a>2.3.1.5 测试</h4><p>再次执行测试类方法，执行结果如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-number">2021-12-24 14:48:38.169 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">10052</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span>  <span class="hljs-attr">Preparing:</span> <span class="hljs-string">select</span> <span class="hljs-string">*</span> <span class="hljs-string">from</span> <span class="hljs-string">student</span> <span class="hljs-string">where</span> <span class="hljs-string">stuno</span> <span class="hljs-string">=</span> <span class="hljs-string">?</span><br><span class="hljs-number">2021-12-24 14:48:38.660 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">10052</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">==&gt;</span> <span class="hljs-attr">Parameters:</span> <span class="hljs-number">210</span><span class="hljs-string">(String)</span><br><span class="hljs-number">2021-12-24 14:48:38.701 </span><span class="hljs-string">DEBUG</span> <span class="hljs-number">10052</span> <span class="hljs-string">---</span> [           <span class="hljs-string">main</span>] <span class="hljs-attr">c.l.mapper.StudentMapper.queryStuBySno   :</span> <span class="hljs-string">&lt;==</span>      <span class="hljs-attr">Total:</span> <span class="hljs-number">1</span><br><span class="hljs-string">学号为[210]的学生姓名为：zhangsan</span><br><span class="hljs-string">学号为[210]的学生姓名为：zhangsan</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="D:\git-data\CherishLLBlog\source\img\SpringBoot\springbootcache05.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-3-2-Ehcache"><a href="#2-3-2-Ehcache" class="headerlink" title="2.3.2 Ehcache"></a>2.3.2 Ehcache</h3><h4 id="2-3-2-1-引入依赖"><a href="#2-3-2-1-引入依赖" class="headerlink" title="2.3.2.1 引入依赖"></a>2.3.2.1 引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- ehcache --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>net.sf.ehcache<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>ehcache<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-2-2-新建ehcache-xml"><a href="#2-3-2-2-新建ehcache-xml" class="headerlink" title="2.3.2.2 新建ehcache.xml"></a>2.3.2.2 新建ehcache.xml</h4><p>在src/main/resources目录下新建ehcache.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">ehcache</span> <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">xsi:noNamespaceSchemaLocation</span>=<span class="hljs-string">&quot;ehcache.xsd&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">defaultCache</span></span><br><span class="hljs-tag">        <span class="hljs-attr">maxElementsInMemory</span>=<span class="hljs-string">&quot;10000&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">eternal</span>=<span class="hljs-string">&quot;false&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">timeToIdleSeconds</span>=<span class="hljs-string">&quot;3600&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">timeToLiveSeconds</span>=<span class="hljs-string">&quot;0&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">overflowToDisk</span>=<span class="hljs-string">&quot;false&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">diskPersistent</span>=<span class="hljs-string">&quot;false&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">diskExpiryThreadIntervalSeconds</span>=<span class="hljs-string">&quot;120&quot;</span> /&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">cache</span> </span><br><span class="hljs-tag">        <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;student&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">maxEntriesLocalHeap</span>=<span class="hljs-string">&quot;2000&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">eternal</span>=<span class="hljs-string">&quot;false&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">timeToIdleSeconds</span>=<span class="hljs-string">&quot;3600&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">timeToLiveSeconds</span>=<span class="hljs-string">&quot;0&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">overflowToDisk</span>=<span class="hljs-string">&quot;false&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">statistics</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">ehcache</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="ehcache说明"><a href="#ehcache说明" class="headerlink" title="ehcache说明"></a>ehcache说明</h5><p>关于Ehcahe的一些说明：</p>
+<ul>
+<li><code>name</code>：缓存名称。</li>
+<li><code>maxElementsInMemory</code>：缓存最大数目</li>
+<li><code>maxElementsOnDisk</code>：硬盘最大缓存个数。</li>
+<li><code>eternal</code>：对象是否永久有效，一但设置了，timeout将不起作用。</li>
+<li><code>overflowToDisk</code>：是否保存到磁盘。</li>
+<li><code>timeToIdleSeconds</code>:设置对象在失效前的允许闲置时间（单位：秒）。仅当<code>eternal=false</code>对象不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。</li>
+<li><code>timeToLiveSeconds</code>：设置对象在失效前允许存活时间（单位：秒）。最大时间介于创建时间和失效时间之间。仅当<code>eternal=false</code>对象不是永久有效时使用，默认是0，也就是对象存活时间无穷大。</li>
+<li><code>diskPersistent</code>：是否缓存虚拟机重启期数据，默认值为false。</li>
+<li><code>diskSpoolBufferSizeMB</code>：这个参数设置DiskStore（磁盘缓存）的缓存区大小。默认是30MB。每个Cache都应该有自己的一个缓冲区。</li>
+<li><code>diskExpiryThreadIntervalSeconds</code>：磁盘失效线程运行时间间隔，默认是120秒。</li>
+<li><code>memoryStoreEvictionPolicy</code>：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。</li>
+<li><code>clearOnFlush</code>：内存数量最大时是否清除。</li>
+<li><code>memoryStoreEvictionPolicy：Ehcache</code>的三种清空策略：<strong>FIFO</strong>，first in first out，这个是大家最熟的，先进先出。<strong>LFU</strong>， Less Frequently Used，就是上面例子中使用的策略，直白一点就是讲一直以来最少被使用的。如上面所讲，缓存的元素有一个hit属性，hit值最小的将会被清出缓存。<strong>LRU</strong>，Least Recently Used，最近最少使用的，缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。</li>
+</ul>
+<h4 id="2-3-2-3-配置application-yml"><a href="#2-3-2-3-配置application-yml" class="headerlink" title="2.3.2.3 配置application.yml"></a>2.3.2.3 配置application.yml</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">cache:</span><br>    <span class="hljs-attr">ehcache:</span><br>      <span class="hljs-attr">config:</span> <span class="hljs-string">&#x27;classpath:ehcache.xml&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-3-2-4-测试"><a href="#2-3-2-4-测试" class="headerlink" title="2.3.2.4 测试"></a>2.3.2.4 测试</h4><p>对于Ehcache来说，更新方法加不加<code>@CachePut</code>注解，结果都一样。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/SpringBoot/">SpringBoot</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BC%93%E5%AD%98/">缓存</a>
+                    
+                      <a class="hover-with-bg" href="/tags/SpringBoot/">SpringBoot</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/16/Nacos%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97/">
+                        <span class="hidden-mobile">Nacos安装指南</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
