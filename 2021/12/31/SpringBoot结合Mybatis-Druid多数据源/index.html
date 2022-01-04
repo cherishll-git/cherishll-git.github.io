@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="个人博客">
+  <meta name="author" content="Liuyq">
+  <meta name="keywords" content="">
+  <meta name="description" content="1、分析在Spring中配置MyBatis SqlSessionFactory的配置： 12345&lt;!-- mybatis 的SqlSessionFactory --&gt;&lt;bean id&#x3D;&quot;sqlSessionFactory&quot; class&#x3D;&quot;org.mybatis.spring.SqlSessionFactoryBean&quot; scope&#x3D;&amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot结合Mybatis+Druid多数据源">
+<meta property="og:url" content="https://cherishll-git.github.io/2021/12/31/SpringBoot%E7%BB%93%E5%90%88Mybatis-Druid%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/index.html">
+<meta property="og:site_name" content="CherishLL-Blog">
+<meta property="og:description" content="1、分析在Spring中配置MyBatis SqlSessionFactory的配置： 12345&lt;!-- mybatis 的SqlSessionFactory --&gt;&lt;bean id&#x3D;&quot;sqlSessionFactory&quot; class&#x3D;&quot;org.mybatis.spring.SqlSessionFactoryBean&quot; scope&#x3D;&amp;qu">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-31T08:41:30.000Z">
+<meta property="article:modified_time" content="2022-01-04T02:35:53.466Z">
+<meta property="article:author" content="Liuyq">
+<meta property="article:tag" content="SpringBoot">
+<meta property="article:tag" content="Druid">
+<meta property="article:tag" content="Mybatis">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>SpringBoot结合Mybatis+Druid多数据源 - CherishLL-Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"cherishll-git.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>惜露~</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SpringBoot结合Mybatis+Druid多数据源">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-31 16:41" pubdate>
+        星期五, 十二月 31日 2021, 16:41:30
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SpringBoot结合Mybatis+Druid多数据源</h1>
+            
+            <div class="markdown-body">
+              <h2 id="1、分析"><a href="#1、分析" class="headerlink" title="1、分析"></a>1、分析</h2><p>在Spring中配置MyBatis SqlSessionFactory的配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- mybatis 的SqlSessionFactory --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;sqlSessionFactory&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;</span> <span class="hljs-attr">scope</span>=<span class="hljs-string">&quot;prototype&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;dataSource&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;dataSource&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;configLocation&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;classpath:mybatis-config.xml&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>所以实际上在Spring Boot中配置MyBatis多数据源的<strong>关键</strong>在于<strong>创建SqlSessionFactory</strong>的时候为其<strong>分配不同</strong>的<strong>数据源。</strong></p>
+<h2 id="2、整合过程"><a href="#2、整合过程" class="headerlink" title="2、整合过程"></a>2、整合过程</h2><h3 id="2-1-引入相关依赖-pom-xml"><a href="#2-1-引入相关依赖-pom-xml" class="headerlink" title="2.1 引入相关依赖(pom.xml)"></a>2.1 引入相关依赖(pom.xml)</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.3.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- oracle驱动 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.oracle<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>ojdbc6<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>6.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- mysql驱动 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- druid数据源驱动 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.1.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-多数据源配置"><a href="#2-2-多数据源配置" class="headerlink" title="2.2 多数据源配置"></a>2.2 多数据源配置</h3><h4 id="2-2-1-配置application-yml文件"><a href="#2-2-1-配置application-yml文件" class="headerlink" title="2.2.1 配置application.yml文件"></a>2.2.1 配置application.yml文件</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span><br>  <span class="hljs-attr">servlet:</span><br>    <span class="hljs-attr">context-path:</span> <span class="hljs-string">/web</span> <span class="hljs-comment">#访问路径以/web开始 如：localhost:8080/web/xxx </span><br><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">druid:</span><br>      <span class="hljs-comment">#数据库访问配置,使用druid数据源</span><br>      <span class="hljs-comment">#数据源1 mysql</span><br>      <span class="hljs-attr">mysql:</span><br>        <span class="hljs-attr">type:</span> <span class="hljs-string">com.alibaba.druid.pool.DruidDataSource</span> <span class="hljs-comment">#数据库访问配置，使用druid数据源</span><br>        <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">com.mysql.jdbc.Driver</span> <br>        <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/test_dev</span><br>        <span class="hljs-attr">username:</span> <span class="hljs-string">root</span><br>        <span class="hljs-attr">password:</span> <span class="hljs-string">root</span><br>      <span class="hljs-comment">#数据源2 oracle</span><br>      <span class="hljs-attr">oracle:</span><br>        <span class="hljs-attr">type:</span> <span class="hljs-string">com.alibaba.druid.pool.DruidDataSource</span><br>        <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">oracle.jdbc.driver.OracleDriver</span><br>        <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:oracle:thin:@localhost:1521:ORCL</span><br>        <span class="hljs-attr">username:</span> <span class="hljs-string">scott</span><br>        <span class="hljs-attr">password:</span> <span class="hljs-string">ABab12</span><br><br>      <span class="hljs-comment"># 连接池配置</span><br>      <span class="hljs-attr">initial-size:</span> <span class="hljs-number">5</span> <span class="hljs-comment">#初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时</span><br>      <span class="hljs-attr">min-idle:</span> <span class="hljs-number">5</span> <span class="hljs-comment"># 最小连接池数量</span><br>      <span class="hljs-attr">max-active:</span> <span class="hljs-number">20</span> <span class="hljs-comment"># 最大连接池数量</span><br>      <span class="hljs-comment"># 连接等待超时时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降</span><br>      <span class="hljs-attr">max-wait:</span> <span class="hljs-number">30000</span> <br>      <span class="hljs-comment"># 配置检测可以关闭的空闲连接间隔时间</span><br>      <span class="hljs-attr">time-between-eviction-runs-millis:</span> <span class="hljs-number">60000</span><br>      <span class="hljs-comment"># 配置连接在池中的最小生存时间</span><br>      <span class="hljs-attr">min-evictable-idle-time-millis:</span> <span class="hljs-number">300000</span><br>      <span class="hljs-comment"># 验证数据库服务可用性的sql.用来检测连接是否有效的sql 因数据库方言而差, 例如 oracle 应该写成 SELECT 1 FROM DUAL</span><br>      <span class="hljs-attr">validation-query:</span> <span class="hljs-string">select</span> <span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-string">from</span> <span class="hljs-string">dual</span><br>      <span class="hljs-comment"># 申请连接时检测空闲时间，根据空闲时间再检测连接是否有效.建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRun</span><br>      <span class="hljs-attr">test-while-idle:</span> <span class="hljs-literal">true</span><br>      <span class="hljs-comment"># 申请连接时直接检测连接是否有效.申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。</span><br>      <span class="hljs-attr">test-on-borrow:</span> <span class="hljs-literal">false</span><br>      <span class="hljs-comment"># 归还连接时检测连接是否有效.归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。</span><br>      <span class="hljs-attr">test-on-return:</span> <span class="hljs-literal">false</span><br>      <span class="hljs-comment"># 打开PSCache，并且指定每个连接上PSCache的大小</span><br>      <span class="hljs-attr">pool-prepared-statements:</span> <span class="hljs-literal">true</span><br>      <span class="hljs-attr">max-open-prepared-statements:</span> <span class="hljs-number">20</span><br>      <span class="hljs-attr">max-pool-prepared-statement-per-connection-size:</span> <span class="hljs-number">20</span><br>      <span class="hljs-comment"># 配置监控统计拦截的filters, 去掉后监控界面sql无法统计, &#x27;wall&#x27;用于防火墙</span><br>      <span class="hljs-attr">filters:</span> <span class="hljs-string">stat,wall</span><br>      <span class="hljs-comment"># Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔</span><br>      <span class="hljs-attr">aop-patterns:</span> <span class="hljs-string">com.lyq.servie.*</span><br><br><br>      <span class="hljs-comment"># WebStatFilter配置</span><br>      <span class="hljs-attr">web-stat-filter:</span><br>        <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span><br>        <span class="hljs-comment"># 添加过滤规则</span><br>        <span class="hljs-attr">url-pattern:</span> <span class="hljs-string">/*</span><br>        <span class="hljs-comment"># 忽略过滤的格式</span><br>        <span class="hljs-attr">exclusions:</span> <span class="hljs-string">&#x27;*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*&#x27;</span><br><br>      <span class="hljs-comment"># StatViewServlet配置</span><br>      <span class="hljs-attr">stat-view-servlet:</span><br>        <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span><br>        <span class="hljs-comment"># 访问路径为/druid时，跳转到StatViewServlet</span><br>        <span class="hljs-attr">url-pattern:</span> <span class="hljs-string">/druid/*</span><br>        <span class="hljs-comment"># 是否能够重置数据</span><br>        <span class="hljs-attr">reset-enable:</span> <span class="hljs-literal">false</span><br>        <span class="hljs-comment"># 需要账号密码才能访问控制台</span><br>        <span class="hljs-attr">login-username:</span> <span class="hljs-string">druid</span><br>        <span class="hljs-attr">login-password:</span> <span class="hljs-string">druid123</span><br>        <span class="hljs-comment"># IP白名单</span><br>        <span class="hljs-comment"># allow: 127.0.0.1</span><br>        <span class="hljs-comment">#　IP黑名单（共同存在时，deny优先于allow）</span><br>        <span class="hljs-comment"># deny: 192.168.1.218</span><br><br>      <span class="hljs-comment"># 配置StatFilter</span><br>      <span class="hljs-attr">filter:</span><br>        <span class="hljs-attr">stat:</span><br>          <span class="hljs-attr">log-slow-sql:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-创建数据源配置类"><a href="#2-2-2-创建数据源配置类" class="headerlink" title="2.2.2 创建数据源配置类"></a>2.2.2 创建数据源配置类</h4><p>MysqlDataSourceConfig.java 与 OrclDataSourceConfig.java </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@MapperScan(basePackages = MysqlDataSourceConfig.PACKAGE, sqlSessionFactoryRef = &quot;mysqlSqlSessionFactory&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MysqlDataSourceConfig</span> </span>&#123;<br>    <span class="hljs-comment">// mysqldao扫描路径</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PACKAGE = <span class="hljs-string">&quot;com.lyq.mysqldao&quot;</span>;<br>    <span class="hljs-comment">// mybatis mapper扫描路径</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String MAPPER_LOCATION = <span class="hljs-string">&quot;classpath:mapper/mysql/*.xml&quot;</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@Primary</span> 标志这个Bean，如果存在多个同类Bean候选时，该bean被优先考虑。</span><br><span class="hljs-comment">     *          多数据源的时候，必须要有一个主数据源，采用<span class="hljs-doctag">@Primary</span>标志该Bean</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Primary</span><br>    <span class="hljs-meta">@Bean(name = &quot;mysqlDataSource&quot;)</span><br>	<span class="hljs-meta">@ConfigurationProperties(&quot;spring.datasource.druid.mysql&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> DataSource <span class="hljs-title">mysqlDataSource</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> DruidDataSourceBuilder.create().build();<br>    &#125;<br><br>    <span class="hljs-meta">@Bean(name = &quot;mysqlTransactionManager&quot;)</span><br>    <span class="hljs-meta">@Primary</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> DataSourceTransactionManager <span class="hljs-title">mysqlTransactionManager</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DataSourceTransactionManager(mysqlDataSource());<br>    &#125;<br><br>    <span class="hljs-meta">@Bean(name = &quot;mysqlSqlSessionFactory&quot;)</span><br>    <span class="hljs-meta">@Primary</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> SqlSessionFactory <span class="hljs-title">mysqlSqlSessionFactory</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-meta">@Qualifier(&quot;mysqlDataSource&quot;)</span> DataSource dataSource)</span></span><br><span class="hljs-function">            <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="hljs-keyword">new</span> SqlSessionFactoryBean();<br>        sessionFactory.setDataSource(dataSource);<br>        <span class="hljs-comment">//如果不使用xml的方式配置mapper，则可以省去下面这行mapper location的配置。</span><br>        sessionFactory.setMapperLocations(<br>                <span class="hljs-keyword">new</span> PathMatchingResourcePatternResolver()<br>                        .getResources(MysqlDataSourceConfig.MAPPER_LOCATION));<br>        <span class="hljs-keyword">return</span> sessionFactory.getObject();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面代码配置了一个名为mysqlDataSource的数据源，对应application.yml中<em><strong>spring.datasource.druid.mysql*<strong>前缀配置的数据库。然后</strong>创建</strong>了一个名为</em>*mysqlSqlSessionFactory<strong>的Bean，并且注入了mysqldatasource。与此同时，还分别定了两个扫描路径PACKAGE和MAPPER_LOCATION，</strong>前者<strong>为Mysql数据库对应的</strong>mapper接口地址<strong>，</strong>后者<strong>为对应的</strong>mapper xml文件路径**。</p>
+<p><em>@Primary</em>标志这个Bean如果在多个同类Bean候选时，该Bean优先被考虑。多数据源配置的时候，必须要有一个主数据源，用*@Primary*标志该Bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@MapperScan(basePackages = OrclDataSourceConfig.PACKAGE,</span><br><span class="hljs-meta">	sqlSessionFactoryRef = &quot;orclSqlSessionFactory&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrclDataSourceConfig</span> </span>&#123;<br><br>	<span class="hljs-comment">// oracledao扫描路径</span><br>	<span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PACKAGE = <span class="hljs-string">&quot;com.lyq.orcldao&quot;</span>; <br>	<span class="hljs-comment">// mybatis mapper扫描路径</span><br>	<span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String MAPPER_LOCATION = <span class="hljs-string">&quot;classpath:mapper/orcl/*.xml&quot;</span>;<br><br>	<span class="hljs-meta">@Bean(name = &quot;orcldatasource&quot;)</span><br>	<span class="hljs-meta">@ConfigurationProperties(&quot;spring.datasource.druid.oracle&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> DataSource <span class="hljs-title">orclDataSource</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> DruidDataSourceBuilder.create().build();<br>    &#125;<br><br>	<span class="hljs-meta">@Bean(name = &quot;orclTransactionManager&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> DataSourceTransactionManager <span class="hljs-title">oracleTransactionManager</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DataSourceTransactionManager(orclDataSource());<br>    &#125;<br><br>    <span class="hljs-meta">@Bean(name = &quot;orclSqlSessionFactory&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> SqlSessionFactory <span class="hljs-title">oracleSqlSessionFactory</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-meta">@Qualifier(&quot;orcldatasource&quot;)</span> DataSource dataSource)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">final</span> SqlSessionFactoryBean sessionFactory = <span class="hljs-keyword">new</span> SqlSessionFactoryBean();<br>        sessionFactory.setDataSource(dataSource);<br>        <span class="hljs-comment">//如果不使用xml的方式配置mapper，则可以省去下面这行mapper location的配置。</span><br>        sessionFactory.setMapperLocations(<br>                <span class="hljs-keyword">new</span> PathMatchingResourcePatternResolver()<br>                .getResources(OrclDataSourceConfig.MAPPER_LOCATION));<br>        <span class="hljs-keyword">return</span> sessionFactory.getObject();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-配置Dao层接口"><a href="#2-3-配置Dao层接口" class="headerlink" title="2.3 配置Dao层接口"></a>2.3 配置Dao层接口</h3><p>分别在com.springboot.mysqldao路径和com.springboot.oracledao路径下创建两个mapper接口：</p>
+<p>MysqlStudentMapper.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MysqlStudentMapper</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">add</span><span class="hljs-params">(Student student)</span></span>;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">update</span><span class="hljs-params">(Student student)</span></span>;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">deleteByIds</span><span class="hljs-params">(String sno)</span></span>;<br>    <span class="hljs-function">Student <span class="hljs-title">queryStudentById</span><span class="hljs-params">(String sno)</span></span>;<br>    List&lt;Map&lt;String, Object&gt;&gt; getAllStudents();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​    OrclStudentMapper.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">OrclStudentMapper</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">add</span><span class="hljs-params">(Student student)</span></span>;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">update</span><span class="hljs-params">(Student student)</span></span>;<br>    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">deleteByIds</span><span class="hljs-params">(String sno)</span></span>;<br>    <span class="hljs-function">Student <span class="hljs-title">queryStudentById</span><span class="hljs-params">(String sno)</span></span>;<br>    List&lt;Map&lt;String, Object&gt;&gt; getAllStudents();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-创建Mapper接口对应的实现"><a href="#2-4-创建Mapper接口对应的实现" class="headerlink" title="2.4 创建Mapper接口对应的实现"></a>2.4 创建Mapper接口对应的实现</h3><p>在src/main/resource/mapper/mysql/路径下创建MysqlStudentMapper.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">mapper</span> <span class="hljs-meta-keyword">PUBLIC</span> <span class="hljs-meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span><br><span class="hljs-meta">        <span class="hljs-meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">namespace</span>=<span class="hljs-string">&quot;com.lyq.mysqldao.MysqlStudentMapper&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;getAllStudents&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;java.util.Map&quot;</span>&gt;</span><br>        select * from student<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>在src/main/resource/mapper/oracle/路径下创建OrclStudentMapper.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">mapper</span> <span class="hljs-meta-keyword">PUBLIC</span> <span class="hljs-meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span><br><span class="hljs-meta">        <span class="hljs-meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">namespace</span>=<span class="hljs-string">&quot;com.lyq.orcldao.OrclStudentMapper&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;getAllStudents&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;java.util.Map&quot;</span>&gt;</span><br>        select * from student<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-5-控制层及业务层"><a href="#2-5-控制层及业务层" class="headerlink" title="2.5 控制层及业务层"></a>2.5 控制层及业务层</h3><p>不再赘述</p>
+<h2 id="3、测试"><a href="#3、测试" class="headerlink" title="3、测试"></a>3、测试</h2><p>新建一些测试数据，运行SpringBoot应用，发起对应请求</p>
+<blockquote>
+<p>点击<a target="_blank" rel="noopener" href="https://github.com/cherishll-git/MyRepo01/tree/master/SpringBootMutiDataSource">这里</a>查看示例代码</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Druid/">Druid</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/SpringBoot/">SpringBoot</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Druid/">Druid</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Mybatis/">Mybatis</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/12/31/SpringBootAOP%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBootAOP记录操作日志</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/29/SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/">
+                        <span class="hidden-mobile">SpringBoot自动装配</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
