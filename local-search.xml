@@ -4,6 +4,91 @@
   
   
   <entry>
+    <title>Ribbon客户端负载均衡</title>
+    <link href="/2022/01/04/Ribbon%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/"/>
+    <url>/2022/01/04/Ribbon%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1、Ribbon负载均衡"><a href="#1、Ribbon负载均衡" class="headerlink" title="1、Ribbon负载均衡"></a>1、Ribbon负载均衡</h1><p>​    Netflixfa 发布的一个<strong>负载均衡器</strong>，有助于控制 HTTP 和 TCP客户端行为。   在 SpringCloud 中， Eureka一般配合Ribbon进行使用，Ribbon提供了客户端负载均衡的功能。</p><pre><code> Ribbon自动的从注册中心中获取服务提供者的 列表信息，并基于内置的负载均衡算法，请求服务</code></pre><span id="more"></span>  <h2 id="1-1-过程"><a href="#1-1-过程" class="headerlink" title="1.1 过程"></a>1.1 过程</h2><p><img src="/img/SpringCloud/ribbon01.png"></p><h2 id="1-2-源码分析"><a href="#1-2-源码分析" class="headerlink" title="1.2 源码分析"></a>1.2 源码分析</h2><p><img src="/img/SpringCloud/ribbon02.png"></p><h2 id="1-3-负载均衡策略"><a href="#1-3-负载均衡策略" class="headerlink" title="1.3 负载均衡策略"></a>1.3 负载均衡策略</h2><p>Ribbon的负载均衡规则是一个叫做<strong>IRule的接口</strong>来定义的，每一个子接口都是一种规则：</p><p><img src="/img/SpringCloud/ribbon03.png"></p><table><thead><tr><th>内置负载均衡规则类</th><th>规则描述</th></tr></thead><tbody><tr><td>RoundRobinRule</td><td>简单轮询服务列表来选择服务器。它是Ribbon默认的负载均衡规则。</td></tr><tr><td>AvailabilityFilteringRule</td><td>对以下两种服务器进行忽略： （1）在默认情况下，这台服务器如果3次连接失败，这台服务器就会被设置为“短路”状态。短路状态将持续30秒，如果再次连接失败，短路的持续时间就会几何级地增加。（2）并发数过高的服务器。如果一个服务器的并发连接数过高，配置了AvailabilityFilteringRule规则的客户端也会将其忽略。并发连接数的上限，可以由客户端的<clientName>.<clientConfigNameSpace>.ActiveConnectionsLimit属性进行配置。</td></tr><tr><td>WeightedResponseTimeRule</td><td>为每一个服务器赋予一个<strong>权重</strong>值。服务器响应时间越长，这个服务器的权重就越小。这个规则会随机选择服务器，这个权重值会影响服务器的选择。</td></tr><tr><td>ZoneAvoidanceRule</td><td>以区域可用的服务器为基础进行服务器的选择。使用Zone对服务器进行分类，这个Zone可以理解为一个机房、一个机架等。而后再对Zone内的多个服务做轮询。</td></tr><tr><td>BestAvailableRule</td><td>忽略那些短路的服务器，并选择并发数较低的服务器。</td></tr><tr><td>RandomRule</td><td>随机选择一个可用的服务器。</td></tr><tr><td>RetryRule</td><td>重试机制的选择逻辑</td></tr></tbody></table><h2 id="1-4-修改负载均衡规则"><a href="#1-4-修改负载均衡规则" class="headerlink" title="1.4 修改负载均衡规则"></a>1.4 修改负载均衡规则</h2><h3 id="1-4-1-代码方式-全局的"><a href="#1-4-1-代码方式-全局的" class="headerlink" title="1.4.1 代码方式(全局的)"></a>1.4.1 代码方式(全局的)</h3><p>在order-service中的OrderApplication类中，定义一个新的IRule</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> IRule <span class="hljs-title">randomRule</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RandomRule();&#125;<br></code></pre></td></tr></table></figure><h3 id="1-4-2-配置文件方式（针对微服务）"><a href="#1-4-2-配置文件方式（针对微服务）" class="headerlink" title="1.4.2 配置文件方式（针对微服务）"></a>1.4.2 配置文件方式（针对微服务）</h3><p>在order-service的application.yml文件中，添加新的配置也可以修改规则</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">userservice:</span><br>  <span class="hljs-attr">ribbon:</span><br><span class="hljs-attr">NFLoadBalancerRuleClassName:</span> <span class="hljs-string">com.netflix.loadbalancer.RandomRule#</span> <span class="hljs-string">负载均衡规则</span><br></code></pre></td></tr></table></figure><h2 id="1-5-饥饿加载"><a href="#1-5-饥饿加载" class="headerlink" title="1.5 饥饿加载"></a>1.5 饥饿加载</h2><p>Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长。</p><p>而饥饿加载则会在项目启动时创建，降低第一次访问的耗时</p><h3 id="开启饥饿加载"><a href="#开启饥饿加载" class="headerlink" title="开启饥饿加载"></a>开启饥饿加载</h3><h3 id="指定饥饿加载的微服务名称"><a href="#指定饥饿加载的微服务名称" class="headerlink" title="指定饥饿加载的微服务名称"></a>指定饥饿加载的微服务名称</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">ribbon:</span><br><span class="hljs-attr">eager-load:</span><br>  <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#开启饥饿加载</span><br>  <span class="hljs-attr">clients:</span> <span class="hljs-string">userservice</span> <span class="hljs-comment">#对指定的userservide这个服务饥饿加载</span><br></code></pre></td></tr></table></figure><h1 id="2、总结"><a href="#2、总结" class="headerlink" title="2、总结"></a>2、总结</h1><p><strong>Ribbon负载均衡规则</strong></p><ul><li><p>规则接口是IRule</p></li><li><p>默认实现是ZoneAvoidanceRule，根据zone选择服务列表，然后轮询</p></li></ul><p><strong>负载均衡自定义方式</strong></p><ul><li><p>代码方式：配置灵活，但修改时需要重新打包发布</p></li><li><p>配置方式：直观，方便，无需重新打包发布，但是无法做全局配置</p></li></ul><p><strong>饥饿加载</strong></p><ul><li><p>开启饥饿加载</p></li><li><p>指定饥饿加载的微服务名称</p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>SpringCloud</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>SpringCloud</tag>
+      
+      <tag>Ribbon</tag>
+      
+      <tag>负载均衡</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Eureka注册中心</title>
+    <link href="/2022/01/03/Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/"/>
+    <url>/2022/01/03/Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1、Eureka注册中心"><a href="#1、Eureka注册中心" class="headerlink" title="1、Eureka注册中心"></a>1、Eureka注册中心</h1><p>主管服务注册与发现，也就是微服务的名称注册到Eureka，就可以通过Eureka找到微服务，而不需要修改服务调用的配置文件。</p><span id="more"></span><h2 id="1-1-服务调用产生的问题"><a href="#1-1-服务调用产生的问题" class="headerlink" title="1.1 服务调用产生的问题"></a>1.1 服务调用产生的问题</h2><ul><li><p>服务消费者该如何获取服务提供者的地址信息？</p></li><li><p>如果有多个服务提供者，消费者该如何选择？</p></li><li><p>消费者如何得知服务提供者的健康状态？</p></li></ul><h2 id="1-2-Eureka作用"><a href="#1-2-Eureka作用" class="headerlink" title="1.2 Eureka作用"></a>1.2 Eureka作用</h2><img src="/img/SpringCloud/eureka01.png" alt="" style="zoom:50%;" /><ul><li><p>消费者该如何获取服务提供者具体信息？</p></li><li><ul><li>服务提供者启动时向eureka注册自己的信息</li><li>eureka保存这些信息</li></ul></li><li><ul><li>消费者根据服务名称向eureka拉取提供者信息</li></ul></li><li><p>如果有多个服务提供者，消费者该如何选择？</p></li><li><ul><li>服务消费者利用负载均衡算法，从服务列表中挑选一个</li></ul></li><li><p>消费者如何感知服务提供者健康状态？</p></li><li><ul><li>服务提供者会每隔30秒向EurekaServer发送心跳请求，报告健康状态</li><li>eureka会更新记录服务列表信息，心跳不正常会被剔除</li></ul></li><li><ul><li>消费者就可以拉取到最新的信息</li></ul></li></ul><h3 id="1-2-1-总结"><a href="#1-2-1-总结" class="headerlink" title="1.2.1 总结"></a>1.2.1 总结</h3><p>在Eureka架构中，微服务角色有两类：</p><ul><li><p>EurekaServer：服务端，注册中心</p></li><li><ul><li>记录服务信息</li><li>心跳监控</li></ul></li><li><p>EurekaClient：客户端</p></li><li><ul><li>Provider：服务提供者，例如案例中的 user-service</li></ul></li><li><ul><li><ul><li>注册自己的信息到EurekaServer</li><li>每隔30秒向EurekaServer发送心跳</li></ul></li></ul></li><li><ul><li>consumer：服务消费者，例如案例中的 order-service</li></ul></li><li><ul><li><ul><li>根据服务名称从EurekaServer拉取服务列表</li><li>基于服务列表做负载均衡，选中一个微服务后发起远程调用</li></ul></li></ul></li></ul><h2 id="1-3-搭建EurekaServer"><a href="#1-3-搭建EurekaServer" class="headerlink" title="1.3 搭建EurekaServer"></a>1.3 搭建EurekaServer</h2><h3 id="1-3-1-引入eureka-server依赖"><a href="#1-3-1-引入eureka-server依赖" class="headerlink" title="1.3.1 引入eureka-server依赖"></a>1.3.1 引入eureka-server依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="1-3-2-添加-EnableEurekaServer注解"><a href="#1-3-2-添加-EnableEurekaServer注解" class="headerlink" title="1.3.2 添加@EnableEurekaServer注解"></a>1.3.2 添加@EnableEurekaServer注解</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span><br><span class="hljs-meta">@EnableEurekaServer</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EurekaServerApplication</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        SpringApplication.run(EurekaServerApplication.class,args);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="1-3-3-在application-yml中配置eureka地址"><a href="#1-3-3-在application-yml中配置eureka地址" class="headerlink" title="1.3.3 在application.yml中配置eureka地址"></a>1.3.3 在application.yml中配置eureka地址</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span><br>  <span class="hljs-attr">port:</span> <span class="hljs-number">9000</span>   <span class="hljs-comment">#端口</span><br><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">application:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">eureka-server</span> <span class="hljs-comment">#服务名称</span><br><span class="hljs-comment">#配置eureka server</span><br><span class="hljs-attr">eureka:</span><br>  <span class="hljs-attr">instance:</span><br>    <span class="hljs-attr">hostname:</span> <span class="hljs-string">localhost</span><br>  <span class="hljs-attr">client:</span><br>    <span class="hljs-attr">register-with-eureka:</span> <span class="hljs-literal">false</span> <span class="hljs-comment">#是否将自己注册到服务注册中心</span><br>    <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span> <span class="hljs-comment">#是否从eureka中获取注册信息</span><br>    <span class="hljs-attr">service-url:</span> <span class="hljs-comment">#配置暴露给eureka Client 的请求地址</span><br>      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span><br></code></pre></td></tr></table></figure><h2 id="1-4-服务注册"><a href="#1-4-服务注册" class="headerlink" title="1.4 服务注册"></a>1.4 服务注册</h2><h3 id="1-4-1-引入eureka-client依赖"><a href="#1-4-1-引入eureka-client依赖" class="headerlink" title="1.4.1 引入eureka-client依赖"></a>1.4.1 引入eureka-client依赖</h3><p>无论是消费者还是提供者，引入eureka-client依赖、知道eureka地址后，都可以完成服务注册</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--eurekaClient依赖--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="1-4-2-在application-yml中配置eureka地址"><a href="#1-4-2-在application-yml中配置eureka地址" class="headerlink" title="1.4.2 在application.yml中配置eureka地址"></a>1.4.2 在application.yml中配置eureka地址</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 配置eureka注册地址</span><br><span class="hljs-attr">eureka:</span><br>  <span class="hljs-attr">client:</span><br>    <span class="hljs-attr">service-url:</span><br>      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://127.0.0.1:9000/eureka</span><br></code></pre></td></tr></table></figure><h2 id="1-5-服务发现"><a href="#1-5-服务发现" class="headerlink" title="1.5 服务发现"></a>1.5 服务发现</h2><h3 id="1-5-1-引入eureka-client依赖"><a href="#1-5-1-引入eureka-client依赖" class="headerlink" title="1.5.1 引入eureka-client依赖"></a>1.5.1 引入eureka-client依赖</h3><h3 id="1-5-2-在application-yml中配置eureka地址"><a href="#1-5-2-在application-yml中配置eureka地址" class="headerlink" title="1.5.2 在application.yml中配置eureka地址"></a>1.5.2 在application.yml中配置eureka地址</h3><h3 id="1-5-3-给RestTemplate添加-LoadBalanced-负载均衡-注解"><a href="#1-5-3-给RestTemplate添加-LoadBalanced-负载均衡-注解" class="headerlink" title="1.5.3 给RestTemplate添加@LoadBalanced(负载均衡)注解"></a>1.5.3 给RestTemplate添加@LoadBalanced(负载均衡)注解</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/*</span><br><span class="hljs-comment">*启动类中</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@LoadBalanced</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> RestTemplate <span class="hljs-title">restTemplate</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RestTemplate();<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="1-5-4-用服务提供者的服务名称远程调用"><a href="#1-5-4-用服务提供者的服务名称远程调用" class="headerlink" title="1.5.4 用服务提供者的服务名称远程调用"></a>1.5.4 用服务提供者的服务名称远程调用</h3><blockquote><p>点击<a href="https://github.com/cherishll-git/Cloud-Code/tree/master/SpringCloudEureka">这里</a>查看源码。</p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>SpringCloud</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>SpringCloud</tag>
+      
+      <tag>Eureka</tag>
+      
+      <tag>注册中心</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>初识SpringCloud与微服务</title>
+    <link href="/2022/01/02/%E5%88%9D%E8%AF%86SpringCloud%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    <url>/2022/01/02/%E5%88%9D%E8%AF%86SpringCloud%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/</url>
+    
+    <content type="html"><![CDATA[<p>​    微服务架构在某种程度上实在SOA架构上的进一步发展</p><p>​    微服务架构是一种架构模式或者说是一种架构风格，它提倡将单一应用程序划分成<strong>一组</strong>小的服务，每个服务运行独立的自己的进程中，服务之间互相协调、互相配合，为用户提供最终价值。</p><p>​    服务之间采用<strong>轻量级</strong>的通信机制互相沟通（通常是基于 HTTP 的 RESTful API ) 。每个服务都围绕着具体业务进行构建，并且能够被<strong>独立地部署</strong>到生产环境、类生产环境等。</p><span id="more"></span><h1 id="1、架构的了解"><a href="#1、架构的了解" class="headerlink" title="1、架构的了解"></a>1、架构的了解</h1><h2 id="1-1-特点"><a href="#1-1-特点" class="headerlink" title="1.1 特点"></a>1.1 特点</h2><p>​    优点：开发简单，适用于小型应用</p><p>​    缺点：不易扩展和维护，代码耦合</p><img src="/img/SpringCloud/cloud01.png" alt="" style="zoom:25%;" /><h2 id="1-2-分布式架构特点"><a href="#1-2-分布式架构特点" class="headerlink" title="1.2 分布式架构特点"></a>1.2 分布式架构特点</h2><p>​    松耦合、扩展性好，但是架构复杂，难度大。适合大型互联网项目。</p><p>​    微服务：一种良好架构设计的分布式方案</p><p>​    有点：拆分粒度小、服务更独立、耦合度更低</p><p>​    缺点：架构非常复杂，运维、监控、部署难度提高</p><img src="/img/SpringCloud/cloud02.png" alt="" style="zoom:35%;" /><h2 id="1-3-微服务架构"><a href="#1-3-微服务架构" class="headerlink" title="1.3 微服务架构"></a>1.3 微服务架构</h2><p>​    单一职责：微服务<strong>拆分粒度</strong>更小，每一个服务都对应唯一的业务能力，做到<strong>单一职责</strong>，避免重复业务开发</p><p>​    面向服务：微服务对外<strong>暴露</strong>业务接口</p><p>​    自治：团队独立、技术独立、数据独立、部署独立</p><p>​    隔离性强：服务调用做好隔离、容错、降级，避免出现级联问题</p><p>​    <strong>优点</strong>：拆分粒度更小、服务更独立、耦合度更低</p><p>​    <strong>缺点</strong>：架构非常复杂，运维、监控、部署难度提高</p><img src="/img/SpringCloud/cloud03.png" alt="" style="zoom:50%;" /><h1 id="2、微服务技术对比"><a href="#2、微服务技术对比" class="headerlink" title="2、微服务技术对比"></a>2、微服务技术对比</h1><p>在国内最知名的就是SpringCloud和阿里巴巴的Dubbo</p><table><thead><tr><th></th><th>Dubbo</th><th>SpringCloud</th><th>SpringCloudAlibaba</th></tr></thead><tbody><tr><td>注册中心</td><td>zookeeper、Redis</td><td>Eureka、Consul</td><td>Nacos、Eureka</td></tr><tr><td>服务远程调用</td><td>Dubbo协议</td><td>Feign（HTTP协议）</td><td>Dubbo、Feign</td></tr><tr><td>配置中心</td><td>无</td><td>SpringCloudConfig</td><td>Spring Cloud Config、Nacos</td></tr><tr><td>服务网关</td><td>无</td><td>SpringCloudGateway、zuul</td><td>SpringCloudGateway、Zuul</td></tr><tr><td>服务监控和保护</td><td>dubbo-admin，功能弱</td><td>Hystrix</td><td>Sentinel</td></tr></tbody></table><h2 id="2-1-SpringCloud"><a href="#2-1-SpringCloud" class="headerlink" title="2.1 SpringCloud"></a>2.1 SpringCloud</h2><p>SpringCloud是目前国内使用<strong>最广泛</strong>的微服务框架。<a href="https://spring.io/projects/spring-cloud">官网地址</a></p><p>SpringCloud集成了各种微服务功能组件，并<strong>基于SpringBoot</strong>实现了这些组件的自动装配，从而提供了良好的开箱即用体验：</p><p><img src="/img/SpringCloud/cloud04.png"></p><h3 id="2-1-1-SpringCloud与SpringBoot版本兼容关系："><a href="#2-1-1-SpringCloud与SpringBoot版本兼容关系：" class="headerlink" title="2.1.1 SpringCloud与SpringBoot版本兼容关系："></a>2.1.1 SpringCloud与SpringBoot版本兼容关系：</h3><table><thead><tr><th>Release Train</th><th>Boot Version</th></tr></thead><tbody><tr><td>2020.0.x aka llford</td><td>2.4.x</td></tr><tr><td>Hoxton</td><td>2.2.x,2.3.x(Starting with SR5)</td></tr><tr><td>Greenwich</td><td>2.1.x</td></tr><tr><td>Finchley</td><td>2.0.x</td></tr><tr><td>Edgware</td><td>1.5.x</td></tr><tr><td>Dalston</td><td>1.5.x</td></tr></tbody></table><h1 id="3、服务拆分与服务远程调用"><a href="#3、服务拆分与服务远程调用" class="headerlink" title="3、服务拆分与服务远程调用"></a>3、服务拆分与服务远程调用</h1><h2 id="3-1-服务拆分"><a href="#3-1-服务拆分" class="headerlink" title="3.1 服务拆分"></a>3.1 服务拆分</h2><p>​    <strong>单一职责：</strong>微服务需要根据业务模块拆分，做到单一职责,不要重复开发相同业务</p><p>​    <strong>面向服务</strong>：微服务可以将业务暴露为接口，供其它微服务使用</p><p>​    <strong>数据独立</strong>：不同微服务都应该有自己独立的数据库</p><h2 id="3-2-服务远程调用"><a href="#3-2-服务远程调用" class="headerlink" title="3.2 服务远程调用"></a>3.2 服务远程调用</h2><h3 id="3-2-1-基于RestTemplate发起Http请求"><a href="#3-2-1-基于RestTemplate发起Http请求" class="headerlink" title="3.2.1 基于RestTemplate发起Http请求"></a>3.2.1 基于RestTemplate发起Http请求</h3><p>http请求做远程调用是与语言无关的调用，只要知道对方的<strong>ip、端口、接口路径、请求参数</strong>即可。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>SpringCloud</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>SpringCloud</tag>
+      
+      <tag>微服务</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>SpringBootAOP记录操作日志</title>
     <link href="/2021/12/31/SpringBootAOP%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97/"/>
     <url>/2021/12/31/SpringBootAOP%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97/</url>
@@ -20,9 +105,9 @@
     
     <tags>
       
-      <tag>AOP</tag>
-      
       <tag>SpringBoot</tag>
+      
+      <tag>AOP</tag>
       
     </tags>
     
@@ -101,9 +186,9 @@
     
     <tags>
       
-      <tag>SpringBoot</tag>
-      
       <tag>缓存</tag>
+      
+      <tag>SpringBoot</tag>
       
     </tags>
     
@@ -128,11 +213,11 @@
     
     <tags>
       
-      <tag>Nacos</tag>
+      <tag>SpringCloud</tag>
       
       <tag>注册中心</tag>
       
-      <tag>SpringCloud</tag>
+      <tag>Nacos</tag>
       
     </tags>
     

@@ -13,32 +13,31 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Nacos安装指南Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+  <meta name="description" content="1、Ribbon负载均衡​    Netflixfa 发布的一个负载均衡器，有助于控制 HTTP 和 TCP客户端行为。   在 SpringCloud 中， Eureka一般配合Ribbon进行使用，Ribbon提供了客户端负载均衡的功能。
+ Ribbon自动的从注册中心中获取服务提供者的 列表信息，并基于内置的负载均衡算法，请求服务
+">
   <meta name="author" content="Liuyq">
   <meta name="keywords" content="">
-  <meta name="description" content="Nacos安装指南Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+  <meta name="description" content="1、Ribbon负载均衡​    Netflixfa 发布的一个负载均衡器，有助于控制 HTTP 和 TCP客户端行为。   在 SpringCloud 中， Eureka一般配合Ribbon进行使用，Ribbon提供了客户端负载均衡的功能。  Ribbon自动的从注册中心中获取服务提供者的 列表信息，并基于内置的负载均衡算法，请求服务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nacos安装指南">
-<meta property="og:url" content="https://cherishll-git.github.io/2021/12/16/Nacos%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:title" content="Ribbon客户端负载均衡">
+<meta property="og:url" content="https://cherishll-git.github.io/2022/01/04/Ribbon%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html">
 <meta property="og:site_name" content="CherishLL-Blog">
-<meta property="og:description" content="Nacos安装指南Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+<meta property="og:description" content="1、Ribbon负载均衡​    Netflixfa 发布的一个负载均衡器，有助于控制 HTTP 和 TCP客户端行为。   在 SpringCloud 中， Eureka一般配合Ribbon进行使用，Ribbon提供了客户端负载均衡的功能。  Ribbon自动的从注册中心中获取服务提供者的 列表信息，并基于内置的负载均衡算法，请求服务">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos01.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos02.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos03.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos04.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos05.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos06.png">
-<meta property="article:published_time" content="2021-12-16T09:42:51.000Z">
-<meta property="article:modified_time" content="2021-12-22T10:00:00.928Z">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/ribbon01.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/ribbon02.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/ribbon03.png">
+<meta property="article:published_time" content="2022-01-04T14:43:33.000Z">
+<meta property="article:modified_time" content="2022-01-06T07:36:31.305Z">
 <meta property="article:author" content="Liuyq">
 <meta property="article:tag" content="SpringCloud">
-<meta property="article:tag" content="注册中心">
-<meta property="article:tag" content="Nacos">
+<meta property="article:tag" content="Ribbon">
+<meta property="article:tag" content="负载均衡">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos01.png">
+<meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud/ribbon01.png">
   
-  <title>Nacos安装指南 - CherishLL-Blog</title>
+  <title>Ribbon客户端负载均衡 - CherishLL-Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -184,7 +183,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Nacos安装指南">
+            <span class="h2" id="subtitle" title="Ribbon客户端负载均衡">
               
             </span>
 
@@ -194,8 +193,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-16 17:42" pubdate>
-        星期四, 十二月 16日 2021, 17:42:51
+      <time datetime="2022-01-04 22:43" pubdate>
+        星期二, 一月 4日 2022, 22:43:33
       </time>
     </span>
   
@@ -205,7 +204,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      1.4k 字
     </span>
   
 
@@ -214,7 +213,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      4 分钟
     </span>
   
 
@@ -243,86 +242,89 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Nacos安装指南</h1>
+            <h1 style="display: none">Ribbon客户端负载均衡</h1>
             
             <div class="markdown-body">
-              <h1 id="Nacos安装指南"><a href="#Nacos安装指南" class="headerlink" title="Nacos安装指南"></a>Nacos安装指南</h1><p><a target="_blank" rel="noopener" href="https://nacos.io/">Nacos</a>是阿里巴巴的产品，现在是<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud">SpringCloud</a>中的一个组件。相比<a target="_blank" rel="noopener" href="https://github.com/Netflix/eureka">Eureka</a>功能更加丰富，在国内受欢迎程度较高</p>
-<span id="more"></span>
+              <h1 id="1、Ribbon负载均衡"><a href="#1、Ribbon负载均衡" class="headerlink" title="1、Ribbon负载均衡"></a>1、Ribbon负载均衡</h1><p>​    Netflixfa 发布的一个<strong>负载均衡器</strong>，有助于控制 HTTP 和 TCP客户端行为。   在 SpringCloud 中， Eureka一般配合Ribbon进行使用，Ribbon提供了客户端负载均衡的功能。</p>
+<pre><code> Ribbon自动的从注册中心中获取服务提供者的 列表信息，并基于内置的负载均衡算法，请求服务
+</code></pre>
+<span id="more"></span>  
 
-<h1 id="1-Windows安装"><a href="#1-Windows安装" class="headerlink" title="1.Windows安装"></a>1.Windows安装</h1><p>开发阶段采用单机安装即可。</p>
-<h2 id="1-1-下载安装包"><a href="#1-1-下载安装包" class="headerlink" title="1.1.下载安装包"></a>1.1.下载安装包</h2><p>在Nacos的GitHub页面，提供有下载链接，可以下载编译好的Nacos服务端或者源代码：</p>
-<p>GitHub主页：<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos">https://github.com/alibaba/nacos</a></p>
-<p>GitHub的Release下载页：<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases">https://github.com/alibaba/nacos/releases</a></p>
-<h2 id="1-2-解压"><a href="#1-2-解压" class="headerlink" title="1.2.解压"></a>1.2.解压</h2><p>将这个包解压到任意非中文目录下，如图：</p>
-<img src="/img/SpringCloud/nacos01.png" srcset="/img/loading.gif" lazyload alt="nacos安装目录1" style="zoom:60%;" />
+<h2 id="1-1-过程"><a href="#1-1-过程" class="headerlink" title="1.1 过程"></a>1.1 过程</h2><p><img src="/img/SpringCloud/ribbon01.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="1-2-源码分析"><a href="#1-2-源码分析" class="headerlink" title="1.2 源码分析"></a>1.2 源码分析</h2><p><img src="/img/SpringCloud/ribbon02.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="1-3-负载均衡策略"><a href="#1-3-负载均衡策略" class="headerlink" title="1.3 负载均衡策略"></a>1.3 负载均衡策略</h2><p>Ribbon的负载均衡规则是一个叫做<strong>IRule的接口</strong>来定义的，每一个子接口都是一种规则：</p>
+<p><img src="/img/SpringCloud/ribbon03.png" srcset="/img/loading.gif" lazyload></p>
+<table>
+<thead>
+<tr>
+<th>内置负载均衡规则类</th>
+<th>规则描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RoundRobinRule</td>
+<td>简单轮询服务列表来选择服务器。它是Ribbon默认的负载均衡规则。</td>
+</tr>
+<tr>
+<td>AvailabilityFilteringRule</td>
+<td>对以下两种服务器进行忽略： （1）在默认情况下，这台服务器如果3次连接失败，这台服务器就会被设置为“短路”状态。短路状态将持续30秒，如果再次连接失败，短路的持续时间就会几何级地增加。（2）并发数过高的服务器。如果一个服务器的并发连接数过高，配置了AvailabilityFilteringRule规则的客户端也会将其忽略。并发连接数的上限，可以由客户端的<clientName>.<clientConfigNameSpace>.ActiveConnectionsLimit属性进行配置。</td>
+</tr>
+<tr>
+<td>WeightedResponseTimeRule</td>
+<td>为每一个服务器赋予一个<strong>权重</strong>值。服务器响应时间越长，这个服务器的权重就越小。这个规则会随机选择服务器，这个权重值会影响服务器的选择。</td>
+</tr>
+<tr>
+<td>ZoneAvoidanceRule</td>
+<td>以区域可用的服务器为基础进行服务器的选择。使用Zone对服务器进行分类，这个Zone可以理解为一个机房、一个机架等。而后再对Zone内的多个服务做轮询。</td>
+</tr>
+<tr>
+<td>BestAvailableRule</td>
+<td>忽略那些短路的服务器，并选择并发数较低的服务器。</td>
+</tr>
+<tr>
+<td>RandomRule</td>
+<td>随机选择一个可用的服务器。</td>
+</tr>
+<tr>
+<td>RetryRule</td>
+<td>重试机制的选择逻辑</td>
+</tr>
+</tbody></table>
+<h2 id="1-4-修改负载均衡规则"><a href="#1-4-修改负载均衡规则" class="headerlink" title="1.4 修改负载均衡规则"></a>1.4 修改负载均衡规则</h2><h3 id="1-4-1-代码方式-全局的"><a href="#1-4-1-代码方式-全局的" class="headerlink" title="1.4.1 代码方式(全局的)"></a>1.4.1 代码方式(全局的)</h3><p>在order-service中的OrderApplication类中，定义一个新的IRule</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> IRule <span class="hljs-title">randomRule</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RandomRule();&#125;<br></code></pre></td></tr></table></figure>
 
-<p>目录说明：</p>
+<h3 id="1-4-2-配置文件方式（针对微服务）"><a href="#1-4-2-配置文件方式（针对微服务）" class="headerlink" title="1.4.2 配置文件方式（针对微服务）"></a>1.4.2 配置文件方式（针对微服务）</h3><p>在order-service的application.yml文件中，添加新的配置也可以修改规则</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">userservice:</span><br>  <span class="hljs-attr">ribbon:</span><br>	<span class="hljs-attr">NFLoadBalancerRuleClassName:</span> <span class="hljs-string">com.netflix.loadbalancer.RandomRule#</span> <span class="hljs-string">负载均衡规则</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-5-饥饿加载"><a href="#1-5-饥饿加载" class="headerlink" title="1.5 饥饿加载"></a>1.5 饥饿加载</h2><p>Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长。</p>
+<p>而饥饿加载则会在项目启动时创建，降低第一次访问的耗时</p>
+<h3 id="开启饥饿加载"><a href="#开启饥饿加载" class="headerlink" title="开启饥饿加载"></a>开启饥饿加载</h3><h3 id="指定饥饿加载的微服务名称"><a href="#指定饥饿加载的微服务名称" class="headerlink" title="指定饥饿加载的微服务名称"></a>指定饥饿加载的微服务名称</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">ribbon:</span><br>	<span class="hljs-attr">eager-load:</span><br>  	<span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#开启饥饿加载</span><br>  	<span class="hljs-attr">clients:</span> <span class="hljs-string">userservice</span> <span class="hljs-comment">#对指定的userservide这个服务饥饿加载</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="2、总结"><a href="#2、总结" class="headerlink" title="2、总结"></a>2、总结</h1><p><strong>Ribbon负载均衡规则</strong></p>
 <ul>
-<li>bin：启动脚本</li>
-<li>conf：配置文件</li>
+<li><p>规则接口是IRule</p>
+</li>
+<li><p>默认实现是ZoneAvoidanceRule，根据zone选择服务列表，然后轮询</p>
+</li>
 </ul>
-<h2 id="1-3-端口配置"><a href="#1-3-端口配置" class="headerlink" title="1.3.端口配置"></a>1.3.端口配置</h2><p>Nacos的默认端口是8848，如果你电脑上的其它进程占用了8848端口，请先尝试关闭该进程。</p>
-<p><strong>如果无法关闭占用8848端口的进程</strong>，也可以进入nacos的conf目录，修改配置文件中的端口：</p>
-<p>application.properties文件，修改其中</p>
-<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-meta">server.port</span>=<span class="hljs-string">xxxx</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="1-4-启动"><a href="#1-4-启动" class="headerlink" title="1.4.启动"></a>1.4.启动</h2><p>启动非常简单，进入bin目录，结构如下：</p>
-<img src="/img/SpringCloud/nacos02.png" srcset="/img/loading.gif" lazyload alt="nacos的bin目录" style="zoom:60%;" />
-
-<p>然后执行命令即可：</p>
+<p><strong>负载均衡自定义方式</strong></p>
 <ul>
-<li><p>windows命令：</p>
-<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dos">startup.<span class="hljs-built_in">cmd</span> -m standalone<br></code></pre></td></tr></table></figure></li>
+<li><p>代码方式：配置灵活，但修改时需要重新打包发布</p>
+</li>
+<li><p>配置方式：直观，方便，无需重新打包发布，但是无法做全局配置</p>
+</li>
 </ul>
-<p>执行后的效果如图：</p>
-<img src="/img/SpringCloud/nacos03.png" srcset="/img/loading.gif" lazyload alt="nacos启动" style="zoom:60%;" />
-
-<h2 id="1-5-访问"><a href="#1-5-访问" class="headerlink" title="1.5.访问"></a>1.5.访问</h2><p>在浏览器输入地址：<a target="_blank" rel="noopener" href="http://127.0.0.1:8848/nacos%E5%8D%B3%E5%8F%AF">http://127.0.0.1:8848/nacos即可</a>:</p>
-<img src="/img/SpringCloud/nacos04.png" srcset="/img/loading.gif" lazyload alt="nacos登录页" style="zoom:40%;" />
-
-<p>默认的账号和密码都是nacos，进入后：</p>
-<img src="/img/SpringCloud/nacos05.png" srcset="/img/loading.gif" lazyload alt="nacos首页" style="zoom:50%;" />
-
-<h1 id="2-Linux安装"><a href="#2-Linux安装" class="headerlink" title="2.Linux安装"></a>2.Linux安装</h1><p>Linux或者Mac安装方式与Windows类似。</p>
-<h2 id="2-1-安装JDK"><a href="#2-1-安装JDK" class="headerlink" title="2.1.安装JDK"></a>2.1.安装JDK</h2><p>Nacos依赖于JDK运行，索引Linux上也需要安装JDK才行。</p>
-<p>上传jdk安装包：</p>
-<p>上传到某个目录，例如：<code>/usr/local/</code></p>
-<p>然后解压缩：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -xvf jdk-8u144-linux-x64.tar.gz<br></code></pre></td></tr></table></figure>
-
-<p>然后重命名为java</p>
-<p>配置环境变量：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">export</span> JAVA_HOME=/usr/<span class="hljs-built_in">local</span>/java<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$JAVA_HOME</span>/bin<br></code></pre></td></tr></table></figure>
-
-<p>设置环境变量：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">source</span> /etc/profile<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-2-上传安装包"><a href="#2-2-上传安装包" class="headerlink" title="2.2.上传安装包"></a>2.2.上传安装包</h2><p>上传nacos-server-1.4.1.tar.gz：</p>
-<p>上传到Linux服务器的某个目录，例如<code>/usr/local/src</code>目录下：</p>
-<h2 id="2-3-解压"><a href="#2-3-解压" class="headerlink" title="2.3.解压"></a>2.3.解压</h2><p>命令解压缩安装包：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -xvf nacos-server-1.4.1.tar.gz<br></code></pre></td></tr></table></figure>
-
-<p>然后删除安装包：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">rm -rf nacos-server-1.4.1.tar.gz<br></code></pre></td></tr></table></figure>
-
-<p>目录内部：</p>
-<img src="/img/SpringCloud/nacos06.png" srcset="/img/loading.gif" lazyload alt="nacos首页" style="zoom:50%;" />
-
-
-
-<h2 id="2-4-端口配置"><a href="#2-4-端口配置" class="headerlink" title="2.4.端口配置"></a>2.4.端口配置</h2><p>与windows中类似</p>
-<h2 id="2-5-启动"><a href="#2-5-启动" class="headerlink" title="2.5.启动"></a>2.5.启动</h2><p>在nacos/bin目录中，输入命令启动Nacos：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sh startup.sh -m standalone<br></code></pre></td></tr></table></figure>
-
-<h1 id="3-Nacos的依赖"><a href="#3-Nacos的依赖" class="headerlink" title="3.Nacos的依赖"></a>3.Nacos的依赖</h1><p>父工程：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-alibaba-dependencies<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.5.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">type</span>&gt;</span>pom<span class="hljs-tag">&lt;/<span class="hljs-name">type</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>import<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-
-
-<p>客户端：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- nacos客户端依赖包 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p><strong>饥饿加载</strong></p>
+<ul>
+<li><p>开启饥饿加载</p>
+</li>
+<li><p>指定饥饿加载的微服务名称</p>
+</li>
+</ul>
 
             </div>
             <hr>
@@ -342,9 +344,9 @@
                     
                       <a class="hover-with-bg" href="/tags/SpringCloud/">SpringCloud</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">注册中心</a>
+                      <a class="hover-with-bg" href="/tags/Ribbon/">Ribbon</a>
                     
-                      <a class="hover-with-bg" href="/tags/Nacos/">Nacos</a>
+                      <a class="hover-with-bg" href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
                     
                   </div>
                 
@@ -361,18 +363,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/12/23/SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">SpringBoot中使用缓存</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/12/15/SpringBoot%E8%87%AA%E5%AE%9A%E4%B9%89starter/">
-                        <span class="hidden-mobile">SpringBoot自定义starterr</span>
+                      <a href="/2022/01/03/Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
+                        <span class="hidden-mobile">Eureka注册中心</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
