@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="1、Nacos注册中心Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+  <meta name="author" content="Liuyq">
+  <meta name="keywords" content="">
+  <meta name="description" content="1、Nacos注册中心Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nacos注册中心">
+<meta property="og:url" content="https://cherishll-git.github.io/2022/01/06/Nacos%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/index.html">
+<meta property="og:site_name" content="CherishLL-Blog">
+<meta property="og:description" content="1、Nacos注册中心Nacos是阿里巴巴的产品，现在是SpringCloud中的一个组件。相比Eureka功能更加丰富，在国内受欢迎程度较高">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos07.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos08.png">
+<meta property="article:published_time" content="2022-01-06T07:44:40.000Z">
+<meta property="article:modified_time" content="2022-01-06T08:16:37.224Z">
+<meta property="article:author" content="Liuyq">
+<meta property="article:tag" content="SpringCloud">
+<meta property="article:tag" content="注册中心">
+<meta property="article:tag" content="Nacos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud/nacos07.png">
+  
+  <title>Nacos注册中心 - CherishLL-Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"cherishll-git.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>惜露~</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Nacos注册中心">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-06 15:44" pubdate>
+        星期四, 一月 6日 2022, 15:44:40
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Nacos注册中心</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1、Nacos注册中心"><a href="#1、Nacos注册中心" class="headerlink" title="1、Nacos注册中心"></a>1、Nacos注册中心</h1><p><a target="_blank" rel="noopener" href="https://nacos.io/">Nacos</a>是阿里巴巴的产品，现在是<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud">SpringCloud</a>中的一个组件。相比<a target="_blank" rel="noopener" href="https://github.com/Netflix/eureka">Eureka</a>功能更加丰富，在国内受欢迎程度较高</p>
+<span id="more"></span>
+
+<h2 id="1-1-Nacos服务搭建"><a href="#1-1-Nacos服务搭建" class="headerlink" title="1.1 Nacos服务搭建"></a>1.1 Nacos服务搭建</h2><blockquote>
+<p>安装参考<a href="https://cherishll-git.github.io/2021/12/16/Nacos%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97/">Nacos安装指南</a></p>
+</blockquote>
+<h3 id="1-1-1-下载安装包"><a href="#1-1-1-下载安装包" class="headerlink" title="1.1.1 下载安装包"></a>1.1.1 下载安装包</h3><h3 id="1-1-2-解压"><a href="#1-1-2-解压" class="headerlink" title="1.1.2 解压"></a>1.1.2 解压</h3><h3 id="1-1-3-在bin目录下运行指令"><a href="#1-1-3-在bin目录下运行指令" class="headerlink" title="1.1.3 在bin目录下运行指令"></a>1.1.3 在bin目录下运行指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">startup.cmd -m standalone<br></code></pre></td></tr></table></figure>
+
+<h2 id="1-2-Nacos服务注册或发现"><a href="#1-2-Nacos服务注册或发现" class="headerlink" title="1.2 Nacos服务注册或发现"></a>1.2 Nacos服务注册或发现</h2><h3 id="1-2-1-引入nacos-discovery依赖"><a href="#1-2-1-引入nacos-discovery依赖" class="headerlink" title="1.2.1 引入nacos.discovery依赖"></a>1.2.1 引入nacos.discovery依赖</h3><h4 id="父工程pom-xml"><a href="#父工程pom-xml" class="headerlink" title="父工程pom.xml"></a>父工程pom.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-alibaba-dependencies<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.5.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">type</span>&gt;</span>pom<span class="hljs-tag">&lt;/<span class="hljs-name">type</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>import<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="子工程pom-xml"><a href="#子工程pom-xml" class="headerlink" title="子工程pom.xml"></a>子工程pom.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- nacos客户端依赖包 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-2-配置nacos地址"><a href="#1-2-2-配置nacos地址" class="headerlink" title="1.2.2 配置nacos地址"></a>1.2.2 配置nacos地址</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>	<span class="hljs-attr">cloud:</span><br>    <span class="hljs-attr">nacos:</span><br>      <span class="hljs-attr">server-addr:</span> <span class="hljs-string">localhost:8848</span> <span class="hljs-comment">#nacos服务端地址</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="1-3-Nacos服务分级存储模型"><a href="#1-3-Nacos服务分级存储模型" class="headerlink" title="1.3 Nacos服务分级存储模型"></a>1.3 Nacos服务分级存储模型</h2><p><img src="/img/SpringCloud/nacos07.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="1-3-1-服务跨集群调用问题"><a href="#1-3-1-服务跨集群调用问题" class="headerlink" title="1.3.1 服务跨集群调用问题"></a>1.3.1 服务跨集群调用问题</h3><p>服务调用尽可能选择本地集群的服务，跨集群调用延迟较高</p>
+<p>本地集群不可访问时，再去访问其它集群</p>
+<h3 id="1-3-2-服务集群属性"><a href="#1-3-2-服务集群属性" class="headerlink" title="1.3.2 服务集群属性"></a>1.3.2 服务集群属性</h3><p>修改yml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span> <br>	<span class="hljs-attr">cloud:</span><br>  	<span class="hljs-attr">nacos:</span><br>    	<span class="hljs-attr">server-addr:</span> <span class="hljs-string">localhost:8848</span> <span class="hljs-comment"># nacos 服务端地址</span><br>      <span class="hljs-attr">discovery:</span><br>      	<span class="hljs-attr">cluster-name:</span> <span class="hljs-string">HZ</span> <span class="hljs-comment"># 配置集群名称，也就是机房位置，例如：HZ，杭州</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3-3-总结"><a href="#1-3-3-总结" class="headerlink" title="1.3.3 总结"></a>1.3.3 总结</h3><h4 id="Nacos服务分级存储模型："><a href="#Nacos服务分级存储模型：" class="headerlink" title="Nacos服务分级存储模型："></a>Nacos服务分级存储模型：</h4><p>① 一级是服务，例如userservice</p>
+<p>② 二级是集群，例如杭州或上海</p>
+<p>③ 三级是实例，例如杭州机房的某台部署了userservice的服务器</p>
+<h4 id="如何设置实例的集群属性："><a href="#如何设置实例的集群属性：" class="headerlink" title="如何设置实例的集群属性："></a>如何设置实例的集群属性：</h4><p>修改<strong>application.yml</strong>文件，添加<code>spring.cloud.nacos.discovery.cluster-name</code>属性即可</p>
+<h2 id="1-4-Nacos负载均衡策略"><a href="#1-4-Nacos负载均衡策略" class="headerlink" title="1.4 Nacos负载均衡策略"></a>1.4 Nacos负载均衡策略</h2><h3 id="1-4-1-根据集群负载均衡"><a href="#1-4-1-根据集群负载均衡" class="headerlink" title="1.4.1 根据集群负载均衡"></a>1.4.1 根据集群负载均衡</h3><p>这个规则优先会寻找与自己同集群的服务</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">user-service:</span><br>  <span class="hljs-attr">ribbon:</span><br>    <span class="hljs-attr">NFLoadBalancerRuleClassName:</span> <span class="hljs-string">com.alibaba.cloud.nacos.ribbon.NacosRule</span> <span class="hljs-comment">#负载均衡规则 RandomRule-随机 NacosRule-优先选择同集群服务实例列表</span><br></code></pre></td></tr></table></figure>
+
+<p>NacosRule负载均衡策略:</p>
+<p>① 优先选择同集群服务实例列表</p>
+<p>② 本地集群找不到提供者，才去其它集群寻找，并且会报警告</p>
+<p>③ 确定了可用实例列表后，再采用随机负载均衡挑选实例</p>
+<h3 id="1-4-2-根据权重负载均衡"><a href="#1-4-2-根据权重负载均衡" class="headerlink" title="1.4.2 根据权重负载均衡"></a>1.4.2 根据权重负载均衡</h3><h4 id="Nacos控制台可以设置实例的权重值"><a href="#Nacos控制台可以设置实例的权重值" class="headerlink" title="Nacos控制台可以设置实例的权重值"></a>Nacos控制台可以设置实例的权重值</h4><p>实际部署中会出现这样的场景：</p>
+<ul>
+<li><ul>
+<li><ul>
+<li>服务器设备性能有差异，部分实例所在机器性能较好，另一些较差，我们希望性能好的机器承担更多的用户请求</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Nacos提供了<strong>权重配置</strong>来<strong>控制访问频率</strong>，权重越大则访问频率越高</p>
+<p>Nacos控制台可以设置实例的权重值，0~1之间</p>
+<p>同集群内的多个实例，权重越高被访问的频率越高</p>
+<p>权重设置为0则完全不会被访问</p>
+<h3 id="1-4-3-环境隔离-namespace"><a href="#1-4-3-环境隔离-namespace" class="headerlink" title="1.4.3 环境隔离-namespace"></a>1.4.3 环境隔离-namespace</h3><p>Nacos中服务存储和数据存储的<strong>最外层</strong>都是一个名为<code>namespace</code>的东西，用来做最外层隔离</p>
+<h4 id="1-4-3-1-Nacos创建namespace"><a href="#1-4-3-1-Nacos创建namespace" class="headerlink" title="1.4.3.1 Nacos创建namespace"></a>1.4.3.1 Nacos创建namespace</h4><h4 id="1-4-3-2-修改应用yml"><a href="#1-4-3-2-修改应用yml" class="headerlink" title="1.4.3.2 修改应用yml"></a>1.4.3.2 修改应用yml</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/heima?useSSL=false</span><br>    <span class="hljs-attr">username:</span> <span class="hljs-string">root</span><br>    <span class="hljs-attr">password:</span> <span class="hljs-number">123</span><br>    <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">com.mysql.jdbc.Driver</span> <br>  <span class="hljs-attr">cloud:</span><br>    <span class="hljs-attr">nacos:</span><br>      <span class="hljs-attr">server-addr:</span> <span class="hljs-string">localhost:8848</span><br>      <span class="hljs-attr">discovery:</span><br>        <span class="hljs-attr">cluster-name:</span> <span class="hljs-string">SH</span> <span class="hljs-comment"># 上海</span><br>        <span class="hljs-attr">namespace:</span> <span class="hljs-string">492a7d5d-237b-46a1-a99a-fa8e98e4b0f9</span> <span class="hljs-comment"># 命名空间，填ID</span><br></code></pre></td></tr></table></figure>
+
+<p>① 每个namespace都有唯一id</p>
+<p>② 服务设置namespace时要写id而不是名称</p>
+<p>③ 不同namespace下的服务互相不可见</p>
+<h2 id="1-5-Nacos注册中心原理"><a href="#1-5-Nacos注册中心原理" class="headerlink" title="1.5 Nacos注册中心原理"></a>1.5 Nacos注册中心原理</h2><h3 id="1-5-1-nacos注册中心细节分析"><a href="#1-5-1-nacos注册中心细节分析" class="headerlink" title="1.5.1 nacos注册中心细节分析"></a>1.5.1 nacos注册中心细节分析</h3><p><img src="/img/SpringCloud/nacos08.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="1-5-2-临时实例和非临时实例"><a href="#1-5-2-临时实例和非临时实例" class="headerlink" title="1.5.2 临时实例和非临时实例"></a>1.5.2 临时实例和非临时实例</h3><p>服务注册到Nacos时，可以选择注册为临时或非临时实例</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">cloud:</span><br>    <span class="hljs-attr">nacos:</span><br>      <span class="hljs-attr">discovery:</span><br>        <span class="hljs-attr">ephemeral:</span> <span class="hljs-literal">false</span> <span class="hljs-comment"># 设置为非临时实例</span><br></code></pre></td></tr></table></figure>
+
+<p>临时实例宕机时，会从nacos的服务列表中剔除，而非临时实例则不会</p>
+<h1 id="2、Nacos与Eureka的比较"><a href="#2、Nacos与Eureka的比较" class="headerlink" title="2、Nacos与Eureka的比较"></a>2、Nacos与Eureka的比较</h1><h2 id="2-1-相同点"><a href="#2-1-相同点" class="headerlink" title="2.1 相同点"></a>2.1 相同点</h2><ul>
+<li>都支持服务注册和服务拉取</li>
+<li>都支持服务提供者心跳方式做健康检测</li>
+</ul>
+<h2 id="2-2-不同点"><a href="#2-2-不同点" class="headerlink" title="2.2 不同点"></a>2.2 不同点</h2><ul>
+<li><p>Nacos支持服务端主动检测提供者状态：临时实例采用心跳模式，非临时实例采用主动检测模式</p>
+</li>
+<li><p>临时实例心跳不正常会被剔除，非临时实例则不会被剔除</p>
+</li>
+<li><p>Nacos支持服务列表变更的消息推送模式，服务列表更新更及时</p>
+</li>
+<li><p>Nacos集群默认采用AP方式，当集群中存在非临时实例时，采用CP模式；Eureka采用AP方式</p>
+</li>
+</ul>
+<blockquote>
+<p>A：可用性        保持服务可用：多节点</p>
+<p>C：一致性        多节点数据一致</p>
+<p>P：分区容忍性        是否可以将数据存在多个地方</p>
+<p>不可能同时满足CAP</p>
+</blockquote>
+<blockquote>
+<p>点击<a target="_blank" rel="noopener" href="https://github.com/cherishll-git/Cloud-Code/tree/master/SpringCloudNacos">这里</a>查看实例代码</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/SpringCloud/">SpringCloud</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/SpringCloud/">SpringCloud</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">注册中心</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Nacos/">Nacos</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/04/Ribbon%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
+                        <span class="hidden-mobile">Ribbon客户端负载均衡</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
