@@ -20,9 +20,9 @@
     
     <tags>
       
-      <tag>Feign</tag>
-      
       <tag>SpringCloud</tag>
+      
+      <tag>Feign</tag>
       
     </tags>
     
@@ -217,9 +217,9 @@
     
     <tags>
       
-      <tag>SpringBoot</tag>
-      
       <tag>AOP</tag>
+      
+      <tag>SpringBoot</tag>
       
     </tags>
     
@@ -298,9 +298,9 @@
     
     <tags>
       
-      <tag>缓存</tag>
-      
       <tag>SpringBoot</tag>
+      
+      <tag>缓存</tag>
       
     </tags>
     
