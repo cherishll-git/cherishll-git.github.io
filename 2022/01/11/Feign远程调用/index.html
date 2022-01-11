@@ -24,17 +24,17 @@
 <meta property="og:site_name" content="CherishLL-Blog">
 <meta property="og:description" content="简介Feign是一个声明式的http客户端，官方地址：https:&#x2F;&#x2F;github.com&#x2F;OpenFeign&#x2F;feign 其作用就是帮助我们优雅的实现http请求的发送。Feign集成了Ribbon">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud%5Cfeign01.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign01.png">
 <meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign03.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud%5Cfeign04.png">
-<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud%5Cfeign02.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign04.png">
+<meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign02.png">
 <meta property="article:published_time" content="2022-01-11T12:18:51.000Z">
-<meta property="article:modified_time" content="2022-01-11T12:32:15.659Z">
+<meta property="article:modified_time" content="2022-01-11T13:34:26.943Z">
 <meta property="article:author" content="Liuyq">
-<meta property="article:tag" content="SpringCloud">
 <meta property="article:tag" content="Feign">
+<meta property="article:tag" content="SpringCloud">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud%5Cfeign01.png">
+<meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud/feign01.png">
   
   <title>Feign远程调用 - CherishLL-Blog</title>
 
@@ -341,7 +341,7 @@
 </li>
 </ol>
 <h1 id="4、Feign的最佳实践"><a href="#4、Feign的最佳实践" class="headerlink" title="4、Feign的最佳实践"></a>4、Feign的最佳实践</h1><h2 id="4-1-方式一（继承）"><a href="#4-1-方式一（继承）" class="headerlink" title="4.1 方式一（继承）"></a>4.1 方式一（继承）</h2><p>给消费者的FeignClient和提供者的controller定义统一的父接口作为标准。</p>
-<p><img src="/img/SpringCloud%5Cfeign01.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/img/SpringCloud/feign01.png" srcset="/img/loading.gif" lazyload></p>
 <p>遵循了面向契约编程的思想，企业中使用较多</p>
 <p><strong>存在问题：</strong></p>
 <ul>
@@ -350,11 +350,11 @@
 </ul>
 <h2 id="4-2-方式二（抽取）"><a href="#4-2-方式二（抽取）" class="headerlink" title="4.2 方式二（抽取）"></a>4.2 方式二（抽取）</h2><p>将FeignClient抽取为独立模块，并且把接口有关的POJO、默认的Feign配置都放到这个模块中，提供给所有消费者使用</p>
 <p><strong>抽取前：</strong></p>
-<img src="/img/SpringCloud\feign03.png" srcset="/img/loading.gif" lazyload alt="" style="zoom:40%;" />
+<img src="/img/SpringCloud/feign03.png" srcset="/img/loading.gif" lazyload alt="" style="zoom:40%;" />
 
 <p><strong>抽取后：</strong></p>
-<p><img src="/img/SpringCloud%5Cfeign04.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/img/SpringCloud%5Cfeign02.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/SpringCloud/feign04.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/SpringCloud/feign02.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="4-3-总结"><a href="#4-3-总结" class="headerlink" title="4.3 总结"></a>4.3 总结</h2><p><strong>Feign的最佳实践：</strong></p>
 <ol>
 <li>让controller和FeignClient继承同一接口</li>
@@ -400,9 +400,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/SpringCloud/">SpringCloud</a>
-                    
                       <a class="hover-with-bg" href="/tags/Feign/">Feign</a>
+                    
+                      <a class="hover-with-bg" href="/tags/SpringCloud/">SpringCloud</a>
                     
                   </div>
                 
