@@ -29,10 +29,10 @@
 <meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign04.png">
 <meta property="og:image" content="https://cherishll-git.github.io/img/SpringCloud/feign02.png">
 <meta property="article:published_time" content="2022-01-11T12:18:51.000Z">
-<meta property="article:modified_time" content="2022-01-11T13:34:26.943Z">
+<meta property="article:modified_time" content="2022-01-12T07:14:34.727Z">
 <meta property="article:author" content="Liuyq">
-<meta property="article:tag" content="Feign">
 <meta property="article:tag" content="SpringCloud">
+<meta property="article:tag" content="Feign">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cherishll-git.github.io/img/SpringCloud/feign01.png">
   
@@ -203,7 +203,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.5k 字
+      3.6k 字
     </span>
   
 
@@ -259,7 +259,7 @@
 <h2 id="1-2-定义和使用Feign客户端"><a href="#1-2-定义和使用Feign客户端" class="headerlink" title="1.2 定义和使用Feign客户端"></a>1.2 定义和使用Feign客户端</h2><h3 id="1-2-1-引入依赖"><a href="#1-2-1-引入依赖" class="headerlink" title="1.2.1 引入依赖"></a>1.2.1 引入依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--Feign客户端依赖--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-openfeign<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="1-2-2-添加-EnableFeignClients注解开启Feign"><a href="#1-2-2-添加-EnableFeignClients注解开启Feign" class="headerlink" title="1.2.2 添加@EnableFeignClients注解开启Feign"></a>1.2.2 添加<code>@EnableFeignClients</code>注解开启Feign</h3><p>在orderservice的启动类添加注解开启Feign</p>
-<h3 id="1-2-3-编写Feign客户端"><a href="#1-2-3-编写Feign客户端" class="headerlink" title="1.2.3 编写Feign客户端"></a>1.2.3 编写Feign客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@FeignClient(&quot;userservice&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">UserClient</span> </span>&#123;<br><br>    <span class="hljs-meta">@GetMapping(&quot;/user/&#123;id&#125;&quot;)</span><br>    <span class="hljs-function">User <span class="hljs-title">findById</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;id&quot;)</span> Long id)</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="1-2-3-编写Feign客户端"><a href="#1-2-3-编写Feign客户端" class="headerlink" title="1.2.3 编写Feign客户端"></a>1.2.3 编写Feign客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.lyq.order.clients;<br><span class="hljs-comment">//...</span><br><span class="hljs-meta">@FeignClient(&quot;userservice&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">UserClient</span> </span>&#123;<br><br>    <span class="hljs-meta">@GetMapping(&quot;/user/&#123;id&#125;&quot;)</span><br>    <span class="hljs-function">User <span class="hljs-title">findById</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;id&quot;)</span> Long id)</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="1-2-3-用Feign客户端代替RestTemplate"><a href="#1-2-3-用Feign客户端代替RestTemplate" class="headerlink" title="1.2.3 用Feign客户端代替RestTemplate"></a>1.2.3 用Feign客户端代替RestTemplate</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderService</span> </span>&#123;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> OrderMapper orderMapper;<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> UserClient userClient;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Order <span class="hljs-title">queryOrderById</span><span class="hljs-params">(Long orderId)</span> </span>&#123;<br>        <span class="hljs-comment">// 1.查询订单</span><br>        Order order = orderMapper.findById(orderId);<br>        <span class="hljs-comment">// 2.查询用户,利用Feign远程调用</span><br>        User user = userClient.findById(order.getUserId());<br>        <span class="hljs-comment">// 3.封装user信息</span><br>        order.setUser(user);<br>        <span class="hljs-comment">// 4.返回</span><br>        <span class="hljs-keyword">return</span> order;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -400,9 +400,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Feign/">Feign</a>
-                    
                       <a class="hover-with-bg" href="/tags/SpringCloud/">SpringCloud</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Feign/">Feign</a>
                     
                   </div>
                 
@@ -418,6 +418,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/01/12/Gateway%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Gateway服务网关</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
