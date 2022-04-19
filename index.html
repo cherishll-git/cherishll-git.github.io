@@ -192,6 +192,239 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/04/19/hotel%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF/" target="_self">
+          hotel数据模板
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/04/19/hotel%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF/" target="_self">
+          
+          
+            
+          
+          数据模板，来源于黑马程序员教程。
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-04-19 20:23" pubdate>
+              2022-04-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/datas/">datas</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/dates/">dates</a>
+            
+              <a href="/tags/demo/">demo</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/03/24/%E8%A7%A3%E5%86%B3dockers%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/" target="_self">
+          解决dockers容器中文乱码
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/03/24/%E8%A7%A3%E5%86%B3dockers%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/" target="_self">
+          
+          
+            
+          
+          1、实际场景​    ik分词器配置扩张词典时，配置的中文词典不生效。通过dockers容器查看配置的ext.dic文件时发现，中文内容显示乱码：
+
+
+查看docker容器编码格式：执行locale命令；可以看到当前编码格式为POSIX，而这种编码格式不支持中文:
+
+
+2、解决方法使用 locale -a 查看容器所有语言环境：
+
+
+2.1 临时修改123LANG=C.UTF-8  (有的是zh_
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-03-24 11:13" pubdate>
+              2022-03-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/FAQ/">FAQ</a>
+            
+              <a href="/categories/FAQ/docker/">docker</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/docker/">docker</a>
+            
+              <a href="/tags/%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/">中文乱码</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/23/Elasticserch%E5%AE%89%E8%A3%85/" target="_self">
+          Elasticserch安装
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/23/Elasticserch%E5%AE%89%E8%A3%85/" target="_self">
+          
+          
+            
+          
+          1、部署单点ES1.1 创建网络因为我们还需要部署kibana容器，因此需要让es和kibana容器互联。这里先创建一个网络：
+1docker network create es-net
+
+1.2 加载镜像这里我们采用ES的7.12.1版本【es.tar】的镜像，这个镜像体积非常大，接近1G。不建议自己pull。可以先下载好
+若是虚拟机，则将es.tar上传至虚拟机（若是windows系统，则命令
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-23 10:53" pubdate>
+              2022-02-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">搜索引擎</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Elasticserch/">Elasticserch</a>
+            
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">分布式搜索引擎</a>
+            
+              <a href="/tags/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">安装教程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/22/Elasticsearch%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" target="_self">
+          Elasticsearch搜索引擎
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/22/Elasticsearch%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" target="_self">
+          
+          
+            
+          
+          1、初识Elasticserch1.1 简介
+是一款非常强大的开源搜索引擎，可以用来实现搜索、日志统计、分析、系统监控等功能
+结合kibana、Logstash、Beats，也就是elastic stack（ELK）- 以elasticserch为核心的技术栈。
+elasticsearch是elastic stack的核心，负责存储、搜索、分析数据，基于Luncene实现。
+
+
+
+1.2 Luce
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-22 14:37" pubdate>
+              2022-02-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">搜索引擎</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Elasticserch/">Elasticserch</a>
+            
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">分布式搜索引擎</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/01/12/Gateway%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3/" target="_self">
           Gateway服务网关
         </a>
@@ -546,221 +779,6 @@ nacos3
               <a href="/tags/Ribbon/">Ribbon</a>
             
               <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/01/03/Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" target="_self">
-          Eureka注册中心
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/01/03/Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" target="_self">
-          
-          
-            
-          
-          1、Eureka注册中心主管服务注册与发现，也就是微服务的名称注册到Eureka，就可以通过Eureka找到微服务，而不需要修改服务调用的配置文件。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-01-03 22:42" pubdate>
-              2022-01-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/SpringCloud/">SpringCloud</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SpringCloud/">SpringCloud</a>
-            
-              <a href="/tags/Eureka/">Eureka</a>
-            
-              <a href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">注册中心</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/01/02/%E5%88%9D%E8%AF%86SpringCloud%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/" target="_self">
-          初识SpringCloud与微服务
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/01/02/%E5%88%9D%E8%AF%86SpringCloud%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1/" target="_self">
-          
-          
-            
-          
-          ​    微服务架构在某种程度上实在SOA架构上的进一步发展
-​    微服务架构是一种架构模式或者说是一种架构风格，它提倡将单一应用程序划分成一组小的服务，每个服务运行独立的自己的进程中，服务之间互相协调、互相配合，为用户提供最终价值。
-​    服务之间采用轻量级的通信机制互相沟通（通常是基于 HTTP 的 RESTful API ) 。每个服务都围绕着具体业务进行构建，并且能够被独立地部署到
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-01-02 22:41" pubdate>
-              2022-01-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/SpringCloud/">SpringCloud</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SpringCloud/">SpringCloud</a>
-            
-              <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/12/31/SpringBootAOP%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97/" target="_self">
-          SpringBootAOP记录操作日志
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/12/31/SpringBootAOP%E8%AE%B0%E5%BD%95%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97/" target="_self">
-          
-          
-            
-          
-          1、基本概念AOP（Aspect Oriented Programming）称为面向切面编程，在程序开发中主要用来解决一些系统层面上的问题，比如日志，事务，权限等待
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-12-31 16:42" pubdate>
-              2021-12-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/SpringBoot/">SpringBoot</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AOP/">AOP</a>
-            
-              <a href="/tags/SpringBoot/">SpringBoot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/12/31/SpringBoot%E7%BB%93%E5%90%88Mybatis-Druid%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_self">
-          SpringBoot结合Mybatis+Druid多数据源
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/12/31/SpringBoot%E7%BB%93%E5%90%88Mybatis-Druid%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_self">
-          
-          
-            
-          
-          1、分析在Spring中配置MyBatis SqlSessionFactory的配置：
-12345&lt;!-- mybatis 的SqlSessionFactory --&gt;&lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot; scope=&qu
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-12-31 16:41" pubdate>
-              2021-12-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Druid/">Druid</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SpringBoot/">SpringBoot</a>
-            
-              <a href="/tags/Druid/">Druid</a>
-            
-              <a href="/tags/Mybatis/">Mybatis</a>
             
           </div>
         
